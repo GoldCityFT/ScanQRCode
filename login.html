@@ -59,25 +59,25 @@
   </style>
 </head>
 <body>
-  <h1>This is My First LIFF App</h1>
+  <h1>My First LIFF App</h1>
 
   <button onclick="getProfile()">Get Profile</button>
   <a class="back-link" href="index.html">กลับไปหน้าแรก</a>
 
   <script>
-   
+    // เตรียม LIFF
     async function main() {
       await liff.init({ liffId: "2007956346-vgXYJ2ke" });
-    
+      // ไม่เรียก liff.login() ที่นี่
     }
 
-    
+    // ฟังก์ชันเรียก profile
     async function getProfile() {
       try {
-     
+        // ตรวจสอบก่อนว่า login หรือยัง
         if (!liff.isLoggedIn()) {
-        liff.login();
-          return; 
+          liff.login(); // login จะเกิดตอนกดปุ่ม
+          return; // หลัง login จะ reload หน้าใหม่
         }
 
         const profile = await liff.getProfile();
