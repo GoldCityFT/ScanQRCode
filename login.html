@@ -76,7 +76,9 @@
       try {
      
         if (!liff.isLoggedIn()) {
-          liff.login(); 
+          liff.login({
+    redirectUri: "https://sirichat-phohom.github.io/login.html"
+  });
           return; 
         }
 
