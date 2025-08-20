@@ -10,7 +10,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Prompt', sans-serif;
-      background: linear-gradient(135deg, #00C300, #00A86B); /* โทนเขียว LINE */
+      background: linear-gradient(135deg, #00C300, #00A86B);
       color: white;
       display: flex;
       flex-direction: column;
@@ -62,19 +62,24 @@
   <h1>My First LIFF App</h1>
 
   <button onclick="getProfile()">Get Profile</button>
-
   <a class="back-link" href="index.html">กลับไปหน้าแรก</a>
 
   <script>
+   
     async function main() {
-      await liff.init({ liffId: "2007956346-vgXYJ2ke" }); // ใส่ LIFF ID ของคุณ
-      if (!liff.isLoggedIn()) {
-        liff.login();
-      }
+      await liff.init({ liffId: "2007956346-vgXYJ2ke" });
+    
     }
 
+    
     async function getProfile() {
       try {
+     
+        if (!liff.isLoggedIn()) {
+          liff.login(); 
+          return; 
+        }
+
         const profile = await liff.getProfile();
         alert(`Hello ${profile.displayName}`);
       } catch (err) {
