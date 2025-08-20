@@ -1,1 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My LIFF Test</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h1>My First LIFF App</h1>
 
+  <!-- ปุ่มเรียก profile -->
+  <button onclick="getProfile()">Get Profile</button>
+
+  <!-- ปุ่ม/ลิงก์กลับหน้าแรก -->
+  <p>
+    <a href="index.html">กลับไปหน้าแรก</a>
+  </p>
+
+  <script>
+    async function main() {
+      await liff.init({ liffId: "https://liff.line.me/2007956346-vgXYJ2ke" })
+      if (!liff.isLoggedIn()) {
+        liff.login()
+      }
+    }
+
+    async function getProfile() {
+      const profile = await liff.getProfile()
+      alert(`Hello ${profile.displayName}`)
+    }
+
+    main()
+  </script>
+</body>
+</html>
