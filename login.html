@@ -1,34 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
+  <meta charset="UTF-8">
   <title>My LIFF Test</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Prompt', sans-serif;
+      background: linear-gradient(135deg, #00C300, #00A86B); /* โทนเขียว LINE */
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    button {
+      background: #ffffff;
+      color: #00A86B;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    button:hover {
+      background: #00A86B;
+      color: white;
+      transform: scale(1.05);
+    }
+    a.back-link {
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      margin-top: 20px;
+      display: inline-block;
+      padding: 10px 20px;
+      border: 2px solid white;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+    }
+    a.back-link:hover {
+      background: white;
+      color: #00A86B;
+    }
+  </style>
 </head>
 <body>
   <h1>My First LIFF App</h1>
 
-  <!-- ปุ่มเรียก profile -->
   <button onclick="getProfile()">Get Profile</button>
 
-  <!-- ปุ่ม/ลิงก์กลับหน้าแรก -->
-  <p>
-    <a href="index.html">กลับไปหน้าแรก</a>
-  </p>
+  <a class="back-link" href="index.html">กลับไปหน้าแรก</a>
 
   <script>
     async function main() {
-      await liff.init({ liffId: "2007956346-G5BmkAQl" })
+      await liff.init({ liffId: "2007956346-G5BmkAQl" }); // ใส่ LIFF ID ของคุณ
       if (!liff.isLoggedIn()) {
-        liff.login()
+        liff.login();
       }
     }
 
     async function getProfile() {
-      const profile = await liff.getProfile()
-      alert(`Hello ${profile.displayName}`)
+      try {
+        const profile = await liff.getProfile();
+        alert(`Hello ${profile.displayName}`);
+      } catch (err) {
+        alert("เกิดข้อผิดพลาด: ไม่สามารถดึงข้อมูลโปรไฟล์ได้");
+        console.error(err);
+      }
     }
 
-    main()
+    main();
   </script>
 </body>
 </html>
