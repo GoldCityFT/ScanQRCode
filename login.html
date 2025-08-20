@@ -76,9 +76,7 @@
       try {
      
         if (!liff.isLoggedIn()) {
-          liff.login({
-    redirectUri: "https://liff.line.me/2007956346-vgXYJ2ke"
-  });
+        liff.login();
           return; 
         }
 
