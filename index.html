@@ -6,70 +6,40 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Prompt', sans-serif;
-      background: linear-gradient(135deg, #74ABE2, #5563DE);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-    }
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 1.2rem;
-      margin-bottom: 40px;
-    }
-    button {
-      background: #ffffff;
-      color: #5563DE;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 50px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-    button:hover {
-      background: #5563DE;
-      color: white;
-      transform: scale(1.05);
-    }
+    body {margin:0;padding:0;font-family:'Prompt',sans-serif;background:linear-gradient(135deg,#74ABE2,#5563DE);color:white;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;text-align:center;}
+    h1 {font-size:3rem;margin-bottom:20px;}
+    p {font-size:1.2rem;margin-bottom:40px;}
+    button {background:#ffffff;color:#5563DE;border:none;padding:15px 30px;border-radius:50px;font-size:1.2rem;font-weight:bold;cursor:pointer;transition:all 0.3s ease;box-shadow:0 5px 15px rgba(0,0,0,0.2);}
+    button:hover {background:#5563DE;color:white;transform:scale(1.05);}
   </style>
 </head>
 <body>
   <h1>ยินดีต้อนรับ!</h1>
   <p>นี่คือหน้าแรกของ LIFF App ตัวอย่าง</p>
-<button id="loginBtn">Login</button>
-<script>
-async function main() {
-  try {
-    await liff.init({ liffId: "2007956346-G5BmkAQl" });
+  <button id="loginBtn">Login</button>
 
-    if (liff.isLoggedIn()) {
-      document.getElementById("loginBtn").style.display = "none"; // ซ่อนปุ่ม ถ้า login แล้ว
-      // ถ้าอยากไปหน้า form อัตโนมัติตอน login แล้ว ก็สามารถเพิ่มได้
-      // window.location.href = "https://sirichat-phohom.github.io/";
+  <script>
+  async function main() {
+    try {
+      await liff.init({ liffId: "2007956346-G5BmkAQl" });
+
+      if (liff.isLoggedIn()) {
+        // ถ้า login แล้ว → ไปหน้า login.html
+        window.location.href = "login.html";
+      } else {
+        document.getElementById("loginBtn").style.display = "inline-block";
+      }
+    } catch (err) {
+      console.error("LIFF init error:", err);
+      alert("เกิดข้อผิดพลาด LIFF init");
     }
-  } catch (err) {
-    console.error("LIFF init error:", err);
   }
-}
 
-document.getElementById("loginBtn").addEventListener("click", () => {
-  liff.login({ redirectUri: window.location.href }); // login จะเกิดตอนกดปุ่ม
-});
+  document.getElementById("loginBtn").addEventListener("click", () => {
+    liff.login({ redirectUri: window.location.href });
+  });
 
-main();
-</script>
+  main();
+  </script>
 </body>
 </html>
