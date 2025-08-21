@@ -58,7 +58,7 @@
 
       if (liff.isLoggedIn()) {
         // ถ้า login แล้ว → ไปหน้า login.html
-        window.location.href = "login.html";
+       window.location.href = window.location.origin + "/login.html";
       } else {
         document.getElementById("loginBtn").style.display = "inline-block";
       }
