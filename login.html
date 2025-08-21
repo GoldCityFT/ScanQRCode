@@ -61,25 +61,31 @@
 <body>
   <h1>My First LIFF App</h1>
 
-  <button onclick="getProfile()">Get Profile</button>
+  <button id="loginBtn" onclick="login()">Login with LINE</button>
+  <button id="profileBtn" onclick="getProfile()">Get Profile</button>
   <a class="back-link" href="index.html">กลับไปหน้าแรก</a>
 
   <script>
-    // เตรียม LIFF
     async function main() {
       await liff.init({ liffId: "2007956346-vgXYJ2ke" });
-      // ไม่เรียก liff.login() ที่นี่
+
+      if (liff.isLoggedIn()) {
+        // ถ้า login แล้ว → แสดงปุ่ม Get Profile
+        document.getElementById("loginBtn").style.display = "none";
+      } else {
+        // ถ้ายังไม่ login → แสดงปุ่ม Login
+        document.getElementById("profileBtn").style.display = "none";
+      }
     }
 
-    // ฟังก์ชันเรียก profile
+    function login() {
+      if (!liff.isLoggedIn()) {
+        liff.login({ redirectUri: window.location.href });
+      }
+    }
+
     async function getProfile() {
       try {
-        // ตรวจสอบก่อนว่า login หรือยัง
-        if (!liff.isLoggedIn()) {
-          liff.login(); // login จะเกิดตอนกดปุ่ม
-          return; // หลัง login จะ reload หน้าใหม่
-        }
-
         const profile = await liff.getProfile();
         alert(`Hello ${profile.displayName}`);
       } catch (err) {
