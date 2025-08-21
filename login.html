@@ -67,16 +67,15 @@
       try {
         await liff.init({ liffId: "2007956346-vgXYJ2ke" });
 
-        // ถ้า login แล้ว ให้ดึงข้อมูล profile
-        if (liff.isLoggedIn()) {
-          const profile = await liff.getProfile();
-          document.getElementById("greeting").innerText = `Hello ${profile.displayName}`;
-        } else {
-          // ถ้ายังไม่ login ให้กด login ก่อน
-          document.getElementById("greeting").innerText = "Hello! Please login first.";
-          document.getElementById("gotoGoldCity").style.display = "none";
-          liff.login({ redirectUri: window.location.href });
+        if (!liff.isLoggedIn()) {
+          // ยังไม่ login → กลับไปหน้า index.html
+          window.location.href = "index.html";
+          return;
         }
+
+        // login แล้ว → ดึงชื่อผู้ใช้
+        const profile = await liff.getProfile();
+        document.getElementById("greeting").innerText = `Hello ${profile.displayName}`;
 
       } catch (err) {
         console.error("LIFF init error:", err);
@@ -84,6 +83,7 @@
       }
     }
 
+    // ปุ่ม Go to GoldCity → ไปเว็บ GoldCity
     document.getElementById("gotoGoldCity").addEventListener("click", () => {
       window.location.href = "https://goldcityshop.com/";
     });
