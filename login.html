@@ -61,43 +61,31 @@
 <body>
   <h1>My First LIFF App</h1>
 
-  <button id="loginBtn" onclick="login()">Login with LINE</button>
-  <button id="profileBtn" onclick="getProfile()">Get Profile</button>
-  <a class="back-link" href="index.html">กลับไปหน้าแรก</a>
+<button id="loginBtn">Login</button>
 
-  <script>
-    async function main() {
+<script>
+async function main() {
   try {
     await liff.init({ liffId: "2007956346-vgXYJ2ke" });
 
     if (liff.isLoggedIn()) {
-      document.getElementById("loginBtn").style.display = "none";
+      // ถ้า login แล้ว → ไปหน้า form
+      window.location.href = "https://sirichat-phohom.github.io/";
     } else {
-      document.getElementById("profileBtn").style.display = "none";
+      document.getElementById("loginBtn").style.display = "inline-block";
     }
   } catch (err) {
     console.error("LIFF init error:", err);
-    alert("LIFF init ผิดพลาด, ตรวจสอบ liffId และ URL");
+    alert("เกิดข้อผิดพลาด LIFF init");
   }
 }
 
-    function login() {
-      if (!liff.isLoggedIn()) {
-        liff.login({ redirectUri: window.location.href });
-      }
-    }
+document.getElementById("loginBtn").addEventListener("click", () => {
+  // login จะ redirect กลับมาหน้านี้
+  liff.login({ redirectUri: window.location.href });
+});
 
-    async function getProfile() {
-      try {
-        const profile = await liff.getProfile();
-        alert(`Hello ${profile.displayName}`);
-      } catch (err) {
-        alert("เกิดข้อผิดพลาด: ไม่สามารถดึงข้อมูลโปรไฟล์ได้");
-        console.error(err);
-      }
-    }
-
-    main();
-  </script>
+main();
+</script>
 </body>
 </html>
