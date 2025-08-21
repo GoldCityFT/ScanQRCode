@@ -67,16 +67,19 @@
 
   <script>
     async function main() {
-      await liff.init({ liffId: "2007956346-vgXYJ2ke" });
+  try {
+    await liff.init({ liffId: "2007956346-vgXYJ2ke" });
 
-      if (liff.isLoggedIn()) {
-        // ถ้า login แล้ว → แสดงปุ่ม Get Profile
-        document.getElementById("loginBtn").style.display = "none";
-      } else {
-        // ถ้ายังไม่ login → แสดงปุ่ม Login
-        document.getElementById("profileBtn").style.display = "none";
-      }
+    if (liff.isLoggedIn()) {
+      document.getElementById("loginBtn").style.display = "none";
+    } else {
+      document.getElementById("profileBtn").style.display = "none";
     }
+  } catch (err) {
+    console.error("LIFF init error:", err);
+    alert("LIFF init ผิดพลาด, ตรวจสอบ liffId และ URL");
+  }
+}
 
     function login() {
       if (!liff.isLoggedIn()) {
