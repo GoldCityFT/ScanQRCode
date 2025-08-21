@@ -49,36 +49,26 @@
 <body>
   <h1>ยินดีต้อนรับ!</h1>
   <p>นี่คือหน้าแรกของ LIFF App ตัวอย่าง</p>
-  <button id="profileBtn">Get Profile</button>
-
+ <button id="loginBtn">Login</button>
 <script>
 async function main() {
   try {
     await liff.init({ liffId: "2007956346-G5BmkAQl" });
 
-    if (!liff.isLoggedIn()) {
-      window.location.href = "login.html"; // redirect ไปหน้า Login.html
-      return;
+    if (liff.isLoggedIn()) {
+      document.getElementById("loginBtn").style.display = "none"; // ซ่อนปุ่ม ถ้า login แล้ว
     }
   } catch (err) {
     console.error("LIFF init error:", err);
-    alert("LIFF init ผิดพลาด");
   }
 }
 
-async function getProfile() {
-  try {
-    const profile = await liff.getProfile();
-    alert(`Hello ${profile.displayName}`);
-  } catch (err) {
-    console.error(err);
-    alert("ไม่สามารถดึงข้อมูล profile ได้");
-  }
-}
-
-document.getElementById("profileBtn").addEventListener("click", getProfile);
+document.getElementById("loginBtn").addEventListener("click", () => {
+  liff.login({ redirectUri: window.location.href });
+});
 
 main();
 </script>
+
 </body>
 </html>
