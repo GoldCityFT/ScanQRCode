@@ -57,8 +57,7 @@ async function main() {
     await liff.init({ liffId: "2007956346-G5BmkAQl" });
 
     if (!liff.isLoggedIn()) {
-      // ถ้ายังไม่ login → redirect ไปหน้า login
-      window.location.href = "https://goldcityshop.com/";
+      window.location.href = "login.html"; // redirect ไปหน้า Login.html
       return;
     }
   } catch (err) {
