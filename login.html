@@ -59,36 +59,22 @@
   </style>
 </head>
 <body>
-  <h1 id="greeting">Hello!</h1>
-  <button id="gotoGoldCity">Go to GoldCity</button>
+  <h2 id="welcome"></h2>
+  <button id="gotoGold">Go to Gold City</button>
 
   <script>
-    async function main() {
-      try {
-        await liff.init({ liffId: "2007956346-vgXYJ2ke" });
+    document.addEventListener("DOMContentLoaded", async () => {
+      await liff.init({ liffId: "2007956346-vgXYJ2ke" });
 
-        if (!liff.isLoggedIn()) {
-          // ยังไม่ login → กลับไปหน้า index.html
-          window.location.href = "index.html";
-          return;
-        }
+      // *** ไม่ต้องเช็ค isLoggedIn() อีกแล้ว ***
+      const profile = await liff.getProfile();
+      document.getElementById("welcome").innerText = "Hello, " + profile.displayName;
 
-        // login แล้ว → ดึงชื่อผู้ใช้
-        const profile = await liff.getProfile();
-        document.getElementById("greeting").innerText = `Hello ${profile.displayName}`;
-
-      } catch (err) {
-        console.error("LIFF init error:", err);
-        alert("เกิดข้อผิดพลาด LIFF init");
-      }
-    }
-
-    // ปุ่ม Go to GoldCity → ไปเว็บ GoldCity
-    document.getElementById("gotoGoldCity").addEventListener("click", () => {
-      window.location.href = "https://goldcityshop.com/";
+      // ปุ่มไป goldcity
+      document.getElementById("gotoGold").addEventListener("click", () => {
+        window.location.href = "goldcity.html";
+      });
     });
-
-    main();
   </script>
 </body>
 </html>
