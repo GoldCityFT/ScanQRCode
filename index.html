@@ -69,9 +69,9 @@
   }
 
   document.getElementById("loginBtn").addEventListener("click", () => {
-    liff.login({ redirectUri: window.location.href });
+     liff.login({ redirectUri: window.location.origin + "/login.html" });
   });
-
+    
   main();
   </script>
 </body>
