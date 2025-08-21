@@ -59,33 +59,34 @@
   </style>
 </head>
 <body>
-  <h1>My First LIFF App</h1>
+  <h1 id="greeting">Hello!</h1>
+  <button id="gotoGoldCity">Go to GoldCity</button>
 
-<button id="loginBtn">Login</button>
+  <script>
+  async function main() {
+    try {
+      await liff.init({ liffId: "2007956346-vgXYJ2ke" });
 
-<script>
-async function main() {
-  try {
-    await liff.init({ liffId: "2007956346-vgXYJ2ke" });
+      if (!liff.isLoggedIn()) {
+        // ถ้ายังไม่ login → กลับหน้า index
+        window.location.href = "index.html";
+        return;
+      }
 
-    if (liff.isLoggedIn()) {
-      // ถ้า login แล้ว → ไปหน้า form
-      window.location.href = "https://sirichat-phohom.github.io/";
-    } else {
-      document.getElementById("loginBtn").style.display = "inline-block";
+      const profile = await liff.getProfile();
+      document.getElementById("greeting").innerText = `Hello ${profile.displayName}`;
+
+    } catch (err) {
+      console.error("LIFF init error:", err);
+      alert("เกิดข้อผิดพลาด LIFF init");
     }
-  } catch (err) {
-    console.error("LIFF init error:", err);
-    alert("เกิดข้อผิดพลาด LIFF init");
   }
-}
 
-document.getElementById("loginBtn").addEventListener("click", () => {
-  // login จะ redirect กลับมาหน้านี้
-  liff.login({ redirectUri: window.location.href });
-});
+  document.getElementById("gotoGoldCity").addEventListener("click", () => {
+    window.location.href = "https://goldcityshop.com/";
+  });
 
-main();
-</script>
+  main();
+  </script>
 </body>
 </html>
