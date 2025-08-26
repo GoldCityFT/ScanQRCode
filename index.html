@@ -66,15 +66,18 @@
       {
         // ถ้า login แล้ว → ไปหน้า login.html
        window.location.href = window.location.origin + "/login.html";
-      } else  {
+      } 
+      else  
+      {
         document.getElementById("loginBtn").style.display = "inline-block";
       }
-  } 
+    } 
+      
     catch (err) 
     {
       console.error("LIFF init error:", err);
       alert("เกิดข้อผิดพลาด LIFF init");
-      }
+    }
   }
 
   document.getElementById("loginBtn").addEventListener("click", () => {
