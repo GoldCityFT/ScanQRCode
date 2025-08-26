@@ -70,15 +70,23 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", async () => {
-    try {
-      // Init LIFF
-      await liff.init({ liffId: "2007956346-G5BmkAQl" });
+  try {
+    await liff.init({ liffId: "2007956346-G5BmkAQl" });
 
-      // ดึงข้อมูล profile
-      const profile = await liff.getProfile();
-      const userId = profile.userId;
-      const displayName = profile.displayName;
-   // ส่งข้อมูลไปยัง n8n Webhook
+    if (!liff.isLoggedIn()) {
+      liff.login(); // redirect หลัง login
+      return;
+    }
+
+    const profile = await liff.getProfile();
+    const userId = profile.userId;
+    const displayName = profile.displayName;
+
+    // แสดงชื่อผู้ใช้ก่อน
+    document.getElementById("welcome").innerText = "Hello, " + displayName;
+
+    // ส่งข้อมูลไป n8n
+    try {
       const response = await fetch("https://183.88.219.251:5678/webhook/AddLineUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,21 +98,21 @@
       } else {
         console.log("✅ User saved successfully");
       }
-  
-
-      // แสดงชื่อผู้ใช้บนจอ
-      document.getElementById("welcome").innerText = "Hello, " + displayName;
-
-      // ปุ่มไป goldcity
-      document.getElementById("gotoGold").addEventListener("click", () => {
-        window.location.href = "https://goldcityshop.com/";
-      });
-
-    } catch (err) {
-      console.error("LIFF init or fetch error:", err);
-      alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
+    } catch (errFetch) {
+      console.error("Fetch error:", errFetch);
     }
-  });
+
+    // redirect ปุ่มหรืออัตโนมัติ
+    document.getElementById("gotoGold").addEventListener("click", () => {
+      window.location.href = "https://goldcityshop.com/";
+    });
+
+  } catch (errLIFF) {
+    console.error("LIFF init/getProfile error:", errLIFF);
+    alert("เกิดข้อผิดพลาด LIFF กรุณาลองใหม่");
+  }
+});
+
 </script>
 
 </body>
