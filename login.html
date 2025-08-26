@@ -87,7 +87,7 @@
 
     // ส่งข้อมูลไป n8n
     try {
-      const response = await fetch("https://183.88.219.251:5678/webhook/AddLineUser", {
+      const response = await fetch("https://183.88.219.251/webhook/AddLineUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, displayName })
