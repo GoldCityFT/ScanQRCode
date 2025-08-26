@@ -6,7 +6,8 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    body 
+    {
       margin: 0;
       padding: 0;
       font-family: 'Prompt', sans-serif;
@@ -19,15 +20,18 @@
       height: 100vh;
       text-align: center;
     }
-    h1 {
+    h1 
+    {
       font-size: 3rem;
       margin-bottom: 20px;
     }
-    p {
+    p 
+    {
       font-size: 1.2rem;
       margin-bottom: 40px;
     }
-    button {
+    button 
+    {
       background: #ffffff;
       color: #5563DE;
       border: none;
@@ -39,7 +43,8 @@
       transition: all 0.3s ease;
       box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
-    button:hover {
+    button:hover 
+    {
       background: #5563DE;
       color: white;
       transform: scale(1.05);
@@ -52,20 +57,24 @@
   <button id="loginBtn">Login</button>
 
   <script>
-  async function main() {
-    try {
+  async function main() 
+  {
+    try
+    {
       await liff.init({ liffId: "2007956346-G5BmkAQl" });
-
-      if (liff.isLoggedIn()) {
+      if (liff.isLoggedIn()) 
+      {
         // ถ้า login แล้ว → ไปหน้า login.html
        window.location.href = window.location.origin + "/login.html";
-      } else {
+      } else  {
         document.getElementById("loginBtn").style.display = "inline-block";
       }
-    } catch (err) {
+  } 
+    catch (err) 
+    {
       console.error("LIFF init error:", err);
       alert("เกิดข้อผิดพลาด LIFF init");
-    }
+      }
   }
 
   document.getElementById("loginBtn").addEventListener("click", () => {
