@@ -79,7 +79,7 @@
       const userId = profile.userId;
       const displayName = profile.displayName;
    // ส่งข้อมูลไปยัง n8n Webhook
-      const response = await fetch("https://your-public-url.com/webhook/AddLineUser", {
+      const response = await fetch("https://183.88.219.251:5678/webhook/AddLineUser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, displayName })
