@@ -6,7 +6,8 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    body 
+    {
       margin: 0;
       padding: 0;
       font-family: 'Prompt', sans-serif;
@@ -19,11 +20,13 @@
       height: 100vh;
       text-align: center;
     }
-    h1 {
+    h1 
+    {
       font-size: 2.5rem;
       margin-bottom: 20px;
     }
-    button {
+    button 
+    {
       background: #ffffff;
       color: #00A86B;
       border: none;
@@ -36,12 +39,14 @@
       margin: 10px;
       box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
-    button:hover {
+    button:hover 
+    {
       background: #00A86B;
       color: white;
       transform: scale(1.05);
     }
-    a.back-link {
+    a.back-link 
+    {
       color: white;
       font-weight: bold;
       text-decoration: none;
@@ -52,7 +57,8 @@
       border-radius: 30px;
       transition: all 0.3s ease;
     }
-    a.back-link:hover {
+    a.back-link:hover 
+    {
       background: white;
       color: #00A86B;
     }
@@ -63,17 +69,20 @@
   <button id="gotoGold">Go to Gold City</button>
 
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
+    document.addEventListener("DOMContentLoaded", async () => 
+      {
       await liff.init({ liffId: "2007956346-G5BmkAQl" });
 
       // *** ไม่ต้องเช็ค isLoggedIn() อีกแล้ว ***
       const profile = await liff.getProfile();
       const userId = profile.userId;
       const displayName = profile.displayName;
+      
       document.getElementById("welcome").innerText = "Hello, " + profile.displayName;
 
       // ปุ่มไป goldcity
-      document.getElementById("gotoGold").addEventListener("click", () => {
+      document.getElementById("gotoGold").addEventListener("click", () => 
+      {
        window.location.href = "https://goldcityshop.com/";
       });
     });
