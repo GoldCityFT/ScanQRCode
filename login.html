@@ -68,6 +68,8 @@
 
       // *** ไม่ต้องเช็ค isLoggedIn() อีกแล้ว ***
       const profile = await liff.getProfile();
+      const userId = profile.userId;
+      const displayName = profile.displayName;
       document.getElementById("welcome").innerText = "Hello, " + profile.displayName;
 
       // ปุ่มไป goldcity
