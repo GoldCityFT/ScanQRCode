@@ -103,8 +103,6 @@
 <input type="text" id="Invoice" placeholder="เช่น INV1234">
 <br><br>
 
-
-   
     <button type="submit">Submit</button>
   </form>
 
@@ -126,15 +124,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       const payload = {
         token: ",b'dk]k[k", // ต้องตรงกับ Token ใน Google Apps Script
-        userId,
-        displayName: document.getElementById("DisplayName").value,
-        location: document.getElementById("Location").value,
-        phone: document.getElementById("Phone").value,
-        mail: document.getElementById("Mail").value,
-        itemName: document.getElementById("ItemName").value,
-        color: document.getElementById("Color").value,
-        size: document.getElementById("Size").value,
-        invoice: document.getElementById("Invoice").value || ""  // ถ้าไม่กรอกจะส่งเป็นค่าว่าง
+        UserId userId,
+        DisplayName: document.getElementById("DisplayName").value,
+        Location: document.getElementById("Location").value,
+        Phone: document.getElementById("Phone").value,
+        Mail: document.getElementById("Mail").value,
+        ItemName: document.getElementById("ItemName").value,
+        Color: document.getElementById("Color").value,
+        Size: document.getElementById("Size").value,
+        Invoice: document.getElementById("Invoice").value || ""  // ถ้าไม่กรอกจะส่งเป็นค่าว่าง
       };
 
       try {
