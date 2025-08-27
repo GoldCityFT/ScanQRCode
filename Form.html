@@ -60,10 +60,51 @@
 
     <label>Email</label>
     <input type="email" id="mail" required>
+    
+   <!-- สินค้าที่ซื้อล่าสุด -->
+<label for="itemName">สินค้าที่ซื้อล่าสุด</label>
+<select id="itemName" required>
+  <option value="">-- เลือกสินค้า --</option>
+  <option value="รองเท้าแตะ">รองเท้าแตะ</option>
+  <option value="รองเท้าผ้าใบ">รองเท้าผ้าใบ</option>
+</select>
+<br><br>
 
-    <label>สินค้าที่ซื้อล่าสุด</label>
-    <input type="text" id="itemName" required>
+<!-- สี -->
+<label for="color">สี</label>
+<select id="color" required>
+  <option value="">-- เลือกสี --</option>
+  <option value="แดง">แดง</option>
+  <option value="ดำ">ดำ</option>
+  <option value="ขาว">ขาว</option>
+  <option value="ครีม">ครีม</option>
+  <option value="เขียว">เขียว</option>
+  <option value="กรม">กรม</option>
+  <option value="น้ำเงิน">น้ำเงิน</option>
+</select>
+<br><br>
 
+<!-- ขนาด -->
+<label for="size">ขนาด</label>
+<select id="size" required>
+  <option value="">-- เลือกขนาด --</option>
+  <option value="39">39</option>
+  <option value="40">40</option>
+  <option value="41">41</option>
+  <option value="42">42</option>
+  <option value="43">43</option>
+  <option value="44">44</option>
+  <option value="45">45</option>
+</select>
+<br><br>
+
+<!-- Invoice (ไม่บังคับ) -->
+<label for="invoice">Invoice (ถ้ามี)</label>
+<input type="text" id="invoice" placeholder="เช่น INV1234">
+<br><br>
+
+
+   
     <button type="submit">Submit</button>
   </form>
 
@@ -90,7 +131,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         location: document.getElementById("location").value,
         phone: document.getElementById("phone").value,
         mail: document.getElementById("mail").value,
-        ItemName: document.getElementById("itemName").value
+        itemName: document.getElementById("itemName").value,
+        color: document.getElementById("color").value,
+        size: document.getElementById("size").value,
+        invoice: document.getElementById("invoice").value || ""  // ถ้าไม่กรอกจะส่งเป็นค่าว่าง
       };
 
       try {
