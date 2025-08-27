@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>แบบสอบถามลูกค้า</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #00C300;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #009f2b;
+    }
+  </style>
+</head>
+<body>
+  <h2>แบบสอบถาม</h2>
+  <form id="surveyForm">
+    <label>ชื่อ - นามสกุล</label>
+    <input type="text" id="displayName" required>
+
+    <label>ที่อยู่</label>
+    <input type="text" id="location" required>
+
+    <label>เบอร์โทร</label>
+    <input type="number" id="phone" required>
+
+    <label>Email</label>
+    <input type="email" id="mail" required>
+
+    <button type="submit">Submit</button>
+  </form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      await liff.init({ liffId: "2007956346-G5BmkAQl" });
+
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
+
+      const profile = await liff.getProfile();
+      const userId = profile.userId;
+
+      // เมื่อ submit
+      document.getElementById("surveyForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const displayName = document.getElementById("displayName").value;
+        const location = document.getElementById("location").value;
+        const phone = document.getElementById("phone").value;
+        const mail = document.getElementById("mail").value;
+
+        const payload = {
+          userId,
+          displayName,
+          location,
+          phone,
+          mail
+        };
+
+        try {
+          const response = await fetch("https://your-public-ip-or-domain/webhook/AddLineUser", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) throw new Error(await response.text());
+
+          alert("ส่งข้อมูลเรียบร้อย!");
+          // redirect ไป goldcity ได้ถ้าต้องการ
+          // window.location.href = "https://goldcityshop.com/";
+
+        } catch (err) {
+          console.error("ส่งข้อมูลไม่สำเร็จ:", err);
+          alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+        }
+      });
+    } catch (err) {
+      console.error("LIFF error:", err);
+      alert("เกิดข้อผิดพลาด LIFF กรุณาลองใหม่");
+    }
+  });
+</script>
+</body>
+</html>
 
