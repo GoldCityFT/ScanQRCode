@@ -49,7 +49,7 @@
 <body>
 <h2>แบบสอบถาม</h2>
 
-<form id="surveyForm">
+<form action="https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec" method="POST">
   <input type="hidden" name="token" value="Gl0D$Yt1@">
   <input type="hidden" id="UserId" name="UserId">
 
@@ -102,34 +102,7 @@
   <button type="submit">Submit</button>
 </form>
 
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  await liff.init({ liffId: "2007956346-G5BmkAQl" });
-  if (!liff.isLoggedIn()) liff.login();
 
-  const profile = await liff.getProfile();
-  document.getElementById("UserId").value = profile.userId;
-
-  document.getElementById("surveyForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const form = e.target;
-    const formData = new FormData(form);
-
-    try {
-      const response = await fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
-        method: "POST",
-        body: formData
-      });
-      alert("ส่งข้อมูลเรียบร้อย!");
-      form.reset();
-    } catch (err) {
-      console.error(err);
-      alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
-    }
-  });
-});
-</script>
 </body>
 </html>
 
