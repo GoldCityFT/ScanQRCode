@@ -50,20 +50,20 @@
   <h2>แบบสอบถาม</h2>
   <form id="surveyForm">
     <label>ชื่อ - นามสกุล</label>
-    <input type="text" id="displayName" required>
+    <input type="text" id="DisplayName" required>
 
     <label>ที่อยู่</label>
-    <input type="text" id="location" required>
+    <input type="text" id="Location" required>
 
     <label>เบอร์โทร</label>
-    <input type="number" id="phone" required>
+    <input type="number" id="Phone" required>
 
     <label>Email</label>
-    <input type="email" id="mail" required>
+    <input type="email" id="Mail" required>
     
    <!-- สินค้าที่ซื้อล่าสุด -->
-<label for="itemName">สินค้าที่ซื้อล่าสุด</label>
-<select id="itemName" required>
+<label for="ItemName">สินค้าที่ซื้อล่าสุด</label>
+<select id="ItemName" required>
   <option value="">-- เลือกสินค้า --</option>
   <option value="รองเท้าแตะ">รองเท้าแตะ</option>
   <option value="รองเท้าผ้าใบ">รองเท้าผ้าใบ</option>
@@ -71,8 +71,8 @@
 <br><br>
 
 <!-- สี -->
-<label for="color">สี</label>
-<select id="color" required>
+<label for="Color">สี</label>
+<select id="Color" required>
   <option value="">-- เลือกสี --</option>
   <option value="แดง">แดง</option>
   <option value="ดำ">ดำ</option>
@@ -85,8 +85,8 @@
 <br><br>
 
 <!-- ขนาด -->
-<label for="size">ขนาด</label>
-<select id="size" required>
+<label for="Size">ขนาด</label>
+<select id="Size" required>
   <option value="">-- เลือกขนาด --</option>
   <option value="39">39</option>
   <option value="40">40</option>
@@ -99,8 +99,8 @@
 <br><br>
 
 <!-- Invoice (ไม่บังคับ) -->
-<label for="invoice">Invoice (ถ้ามี)</label>
-<input type="text" id="invoice" placeholder="เช่น INV1234">
+<label for="Invoice">Invoice (ถ้ามี)</label>
+<input type="text" id="Invoice" placeholder="เช่น INV1234">
 <br><br>
 
 
@@ -127,14 +127,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       const payload = {
         token: ",b'dk]k[k", // ต้องตรงกับ Token ใน Google Apps Script
         userId,
-        displayName: document.getElementById("displayName").value,
-        location: document.getElementById("location").value,
-        phone: document.getElementById("phone").value,
-        mail: document.getElementById("mail").value,
-        itemName: document.getElementById("itemName").value,
-        color: document.getElementById("color").value,
-        size: document.getElementById("size").value,
-        invoice: document.getElementById("invoice").value || ""  // ถ้าไม่กรอกจะส่งเป็นค่าว่าง
+        displayName: document.getElementById("DisplayName").value,
+        location: document.getElementById("Location").value,
+        phone: document.getElementById("Phone").value,
+        mail: document.getElementById("Mail").value,
+        itemName: document.getElementById("ItemName").value,
+        color: document.getElementById("Color").value,
+        size: document.getElementById("Size").value,
+        invoice: document.getElementById("Invoice").value || ""  // ถ้าไม่กรอกจะส่งเป็นค่าว่าง
       };
 
       try {
