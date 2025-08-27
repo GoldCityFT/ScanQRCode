@@ -65,7 +65,7 @@
       if (liff.isLoggedIn()) 
       {
         // ถ้า login แล้ว → ไปหน้า login.html
-       window.location.href = window.location.origin + "/login.html";
+       window.location.href = window.location.origin + "/Form.html";
       } 
       else  
       {
@@ -81,7 +81,7 @@
   }
 
   document.getElementById("loginBtn").addEventListener("click", () => {
-     liff.login({ redirectUri: window.location.origin + "/login.html" });
+     liff.login({ redirectUri: window.location.origin + "/Form.html" });
   });
     
   main();
