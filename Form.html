@@ -49,30 +49,31 @@
 <body>
 <h2>แบบสอบถาม</h2>
 
-<form action="https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec" method="POST">
+<form id="surveyForm">
   <input type="hidden" name="token" value="Gl0D$Yt1@">
+  <input type="hidden" id="UserId" name="UserId">
 
   <label>ชื่อ - นามสกุล</label>
   <input type="text" name="DisplayName" required>
 
   <label>ที่อยู่</label>
-  <input type="text" name="Location" required>
+  <input type="text" name="Location">
 
   <label>เบอร์โทร</label>
   <input type="number" name="Phone" required>
 
   <label>Email</label>
-  <input type="email" name="Mail" required>
+  <input type="email" name="Mail">
 
   <label>สินค้าที่ซื้อล่าสุด</label>
-  <select name="ItemName" required>
+  <select name="ItemName">
     <option value="">-- เลือกสินค้า --</option>
     <option value="รองเท้าแตะ">รองเท้าแตะ</option>
     <option value="รองเท้าผ้าใบ">รองเท้าผ้าใบ</option>
   </select>
 
   <label>สี</label>
-  <select name="Color" required>
+  <select name="Color">
     <option value="">-- เลือกสี --</option>
     <option value="แดง">แดง</option>
     <option value="ดำ">ดำ</option>
@@ -84,7 +85,7 @@
   </select>
 
   <label>ขนาด</label>
-  <select name="Size" required>
+  <select name="Size">
     <option value="">-- เลือกขนาด --</option>
     <option value="39">39</option>
     <option value="40">40</option>
@@ -101,6 +102,34 @@
   <button type="submit">Submit</button>
 </form>
 
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  await liff.init({ liffId: "YOUR_LIFF_ID" });
+  if (!liff.isLoggedIn()) liff.login();
+
+  const profile = await liff.getProfile();
+  document.getElementById("UserId").value = profile.userId;
+
+  document.getElementById("surveyForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
+        method: "POST",
+        body: formData
+      });
+      alert("ส่งข้อมูลเรียบร้อย!");
+      form.reset();
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาดในการส่งข้อมูล");
+    }
+  });
+});
+</script>
 </body>
 </html>
 
