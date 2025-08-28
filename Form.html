@@ -49,7 +49,7 @@
 <body>
 <h2>แบบสอบถาม</h2>
 
-<form id="surveyForm" action="https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec" method="POST">
+<form id="surveyForm" action="https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec" method="POST" target="hidden_iframe">
   <input type="hidden" name="token" value="Gl0D$Yt1@">
   <input type="hidden" id="UserId" name="UserId">
 
@@ -102,6 +102,8 @@
   <button type="submit">Submit</button>
 </form>
   
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
+  
   <!-- Modal -->
 <div id="modal" style="
   display:none;
@@ -137,18 +139,13 @@ main();
 
 const form = document.getElementById("surveyForm");
 const modal = document.getElementById("modal");
-const okBtn = document.getElementById("okBtn");
 
 form.addEventListener("submit", function() {
-  // เมื่อ submit ปกติ จะ reload หน้าและส่งข้อมูล ห้ modal แสดงขึ้นทันที
-
+  // แสดง popup
   modal.style.display = "flex";
-});
-
-okBtn.addEventListener("click", () => {
-  window.location.href = "Login.html";
+  // ซ่อน popupอัตโนมัติหลัง 2 วินาที
+  setTimeout(() => { modal.style.display = "none"; }, 2000);
 });
 </script>
-
 </html>
 
