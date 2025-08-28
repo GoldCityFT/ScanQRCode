@@ -127,14 +127,11 @@
 </body>
   
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<script>
+<script> 
 async function main() {
   await liff.init({ liffId: "2007956346-G5BmkAQl" });
-  if (!liff.isLoggedIn()) {
-    liff.login();
-  } else {
-    document.getElementById("UserId").value = (await liff.getProfile()).userId;
-  }
+  if (!liff.isLoggedIn()) liff.login();
+  else document.getElementById("UserId").value = (await liff.getProfile()).userId;
 }
 main();
 
@@ -142,22 +139,14 @@ const form = document.getElementById("surveyForm");
 const modal = document.getElementById("modal");
 const okBtn = document.getElementById("okBtn");
 
-form.addEventListener("submit", async function(e) {
-  e.preventDefault(); // ป้องกัน reload หน้า
-  const formData = new FormData(form);
+form.addEventListener("submit", function() {
+  // เมื่อ submit ปกติ จะ reload หน้าและส่งข้อมูล ห้ modal แสดงขึ้นทันที
 
-  try {
-    await fetch(form.action, { method: "POST", body: formData })
-      .then(res => res.text()); // แปลงเป็น text
-    modal.style.display = "flex"; // แสดง modal หลังส่งเรียบร้อย
-  } catch (err) {
-    alert("เกิดข้อผิดพลาด: " + err);
-  }
+  modal.style.display = "flex";
 });
 
-// ปุ่ม OK
 okBtn.addEventListener("click", () => {
-  window.location.href = "Login.html"; // redirect หลังกด OK
+  window.location.href = "Login.html";
 });
 </script>
 
