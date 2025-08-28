@@ -145,9 +145,10 @@ form.addEventListener("submit", function() {
   // แสดง popup
   modal.style.display = "flex";
   // ซ่อน popupอัตโนมัติหลัง 5 วินาที
-  setTimeout(() => { modal.style.display = "none"; }, 5000);
+ // setTimeout(() => { modal.style.display = "none"; }, 5000);
 });
   okBtn.addEventListener("click", () => {
+  modal.style.display = "none";   // ซ่อน popup
   window.location.href = "Login.html";
 });
 </script>
