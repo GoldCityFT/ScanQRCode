@@ -139,12 +139,16 @@ main();
 
 const form = document.getElementById("surveyForm");
 const modal = document.getElementById("modal");
-
+const okBtn = document.getElementById("okBtn");
+  
 form.addEventListener("submit", function() {
   // แสดง popup
   modal.style.display = "flex";
-  // ซ่อน popupอัตโนมัติหลัง 2 วินาที
-  setTimeout(() => { modal.style.display = "none"; }, 2000);
+  // ซ่อน popupอัตโนมัติหลัง 5 วินาที
+  setTimeout(() => { modal.style.display = "none"; }, 5000);
+});
+  okBtn.addEventListener("click", () => {
+  window.location.href = "Login.html";
 });
 </script>
 </html>
