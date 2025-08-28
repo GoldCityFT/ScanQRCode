@@ -50,7 +50,6 @@
 <h2>แบบสอบถาม</h2>
 
 <form id="surveyForm" action="https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec" method="POST">
-<form id="surveyForm">
   <input type="hidden" name="token" value="Gl0D$Yt1@">
   <input type="hidden" id="UserId" name="UserId">
 
@@ -129,7 +128,6 @@
   
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
-  
 async function main() {
   await liff.init({ liffId: "2007956346-G5BmkAQl" });
   if (!liff.isLoggedIn()) {
@@ -149,19 +147,18 @@ form.addEventListener("submit", async function(e) {
   const formData = new FormData(form);
 
   try {
-    await fetch(form.action, { method: "POST", body: formData });
-
-    // แสดง modal
-    modal.style.display = "flex";
+    await fetch(form.action, { method: "POST", body: formData })
+      .then(res => res.text()); // แปลงเป็น text
+    modal.style.display = "flex"; // แสดง modal หลังส่งเรียบร้อย
   } catch (err) {
     alert("เกิดข้อผิดพลาด: " + err);
   }
 });
 
+// ปุ่ม OK
 okBtn.addEventListener("click", () => {
   window.location.href = "Login.html"; // redirect หลังกด OK
 });
-
 </script>
 
 </html>
