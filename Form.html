@@ -103,22 +103,17 @@
   <button type="submit">Submit</button>
 </form>
 </body>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <script>
-
-  const liffId = "2007956346-G5BmkAQl";  
-
   async function main() {
-    await liff.init({ liffId });
-
+    await liff.init({ liffId: "2007956346-G5BmkAQl" });
     if (!liff.isLoggedIn()) {
-      liff.login(); 
+      liff.login();
+    } else {
+      const profile = await liff.getProfile();
+      document.getElementById("UserId").value = profile.userId;
     }
-
-    const profile = await liff.getProfile();
-    document.getElementById("UserId").value = profile.userId; 
-
   }
-
   main();
 </script>
 
