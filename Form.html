@@ -136,11 +136,20 @@ const modal = document.getElementById("modal");
 const okBtn = document.getElementById("okBtn");
   
 form.addEventListener("submit", function() {
-  // แสดง popup
+  const selectedItem = itemSelect.value;
+  const selectedColor = colorSelect.value;
+
+  // ถ้าเลือกสินค้าแล้ว แต่ไม่ได้เลือกสี  ห้าม submit
+  if (selectedItem && !selectedColor) {
+    event.preventDefault(); // หยุดการส่งฟอร์ม
+    alert("กรุณาเลือกสีด้วยครับ");
+    return;
+  }
+
+   // แสดง popup
   modal.style.display = "flex";
-  // ซ่อน popupอัตโนมัติหลัง 5 วินาที
- // setTimeout(() => { modal.style.display = "none"; }, 5000);
 });
+
   okBtn.addEventListener("click", () => {
   modal.style.display = "none";   // ซ่อน popup
   window.location.href = "Login.html";
