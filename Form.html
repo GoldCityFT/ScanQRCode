@@ -66,23 +66,16 @@
   <input type="email" name="Mail">
 
   <label>สินค้าที่ซื้อล่าสุด (ถ้ามี)</label>
-  <select name="ItemName">
+  <select id="itemSelect" name="ItemName">
     <option value="">-- เลือกสินค้า --</option>
     <option value="รองเท้าแตะ">รองเท้าแตะ</option>
     <option value="รองเท้าผ้าใบ">รองเท้าผ้าใบ</option>
   </select>
 
-  <label>สี (ถ้ามี)</label>
-  <select name="Color">
-    <option value="">-- เลือกสี --</option>
-    <option value="แดง">แดง</option>
-    <option value="ดำ">ดำ</option>
-    <option value="ขาว">ขาว</option>
-    <option value="ครีม">ครีม</option>
-    <option value="เขียว">เขียว</option>
-    <option value="กรม">กรม</option>
-    <option value="น้ำเงิน">น้ำเงิน</option>
-  </select>
+<label>สี (ถ้ามี)</label>
+<select id="colorSelect" name="Color">
+  <option value="">-- เลือกสี --</option>
+</select>
 
   <label>ขนาด (ถ้ามี)</label>
   <select name="Size">
@@ -152,6 +145,33 @@ form.addEventListener("submit", function() {
   modal.style.display = "none";   // ซ่อน popup
   window.location.href = "Login.html";
 });
+ // =========================================================== Filter สี รองเท้า =====================================================================
+const itemSelect = document.getElementById("itemSelect");
+const colorSelect = document.getElementById("colorSelect");
+
+// กำหนดตัวเลือกสีตามสินค้า
+const colorOptions = {
+  "รองเท้าแตะ": ["ดำ", "ขาว"],
+  "รองเท้าผ้าใบ": ["แดง", "ดำ", "ขาว", "ครีม", "เขียว", "กรม", "น้ำเงิน"]
+};
+
+// ฟังก์ชันอัปเดต list สี
+function updateColors() {
+  const selectedItem = itemSelect.value;
+  colorSelect.innerHTML = '<option value="">-- เลือกสี --</option>'; // reset
+
+  if (selectedItem && colorOptions[selectedItem]) {
+    colorOptions[selectedItem].forEach(color => {
+      const option = document.createElement("option");
+      option.value = color;
+      option.textContent = color;
+      colorSelect.appendChild(option);
+    });
+  }
+}
+
+// เมื่อเลือกสินค้าใหม่ → อัปเดต list สี
+itemSelect.addEventListener("change", updateColors);
 </script>
 </html>
 
