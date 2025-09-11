@@ -55,55 +55,41 @@
   <script>
     async function main() {
       const html5QrCode = new Html5Qrcode("reader");
-
       const config = { fps: 10, qrbox: { width: window.innerWidth, height: window.innerHeight } };
-
-      html5QrCode.start(
+      
+    html5QrCode.start(
         { facingMode: "environment" },
         config,
-        qrCodeMessage => {
-          const trackingCode = qrCodeMessage.trim();
+        async qrCodeMessage => {
+            const trackingCode = qrCodeMessage.trim();
+            if(!trackingCode){ alert("QR Code ไม่ถูกต้อง"); return; }
 
-          if (!trackingCode) {
-            alert("QR Code ไม่ถูกต้อง กรุณาสแกนใหม่");
-            return;
-          }
+            try {
+                // ส่งไป Apps Script ผ่าน fetch
+                const res = await fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
+                    method: "POST",
+                    body: new URLSearchParams({
+                        token: "Gl0D$Yt1@",
+                        Tracking: trackingCode
+                    })
+                });
+                const text = (await res.text()).trim();
+                if(text === "OK") alert("Scan QRCODE เรียบร้อยแล้ว!");
+                else alert("Scan QRCODE สำเร็จแต่ response ไม่ถูกต้อง!!: "+text);
+            } catch(err){
+                console.error("Scan error:", err);
+                alert("เกิดข้อผิดพลาดในการ Scan QRCODE");
+            }
 
-          fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
-            method: "POST",
-            body: new URLSearchParams({
-              token: "Gl0D$Yt1@",
-              Tracking: trackingCode
-            })
-          })
-          .then(res => res.text())
-          .then(data => {
-            data = data.trim(); // ลบ space / newline
-            if (data === "OK") {
-              alert("Scan QRCODE เรียบร้อยแล้ว!");
-              window.location.href = "Form.html";
-            } else {
-              alert("Scan QRCODE สำเร็จแต่ response ไม่ถูกต้อง!!: " + data);
-          }
-          })
-
-          .catch(err => {
-            console.error("Scan error:", err);
-            alert("เกิดข้อผิดพลาดในการ Scan QRCODE!!!");
-          });
-
-          html5QrCode.stop();
+            html5QrCode.stop();
+            // ไป form.html ต่อได้ถ้าต้องการ
+            // window.location.href = "Form.html";
         },
-        errorMessage => {
-          console.log("Scanning...", errorMessage);
-        }
-      ).catch(err => {
-        console.error("Camera start error:", err);
-        alert("ไม่สามารถเปิดกล้องได้");
-      });
-    }
+        errorMessage => { console.log("Scanning...", errorMessage); }
+    ).catch(err => { console.error("Camera start error:", err); alert("ไม่สามารถเปิดกล้องได้"); });
+}
 
-    main();
-  </script>
+main();
+</script>
 </body>
 </html>
