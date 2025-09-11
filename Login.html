@@ -67,7 +67,7 @@
 <body>
   <h2 id="welcome"></h2>
   <button id="gotoForm">ไปกรอกแบบสอบถาม</button>
-
+  <button id="gotoScan">Scan QRCODE</button>
 <script>
   document.addEventListener("DOMContentLoaded", async () => {
     try {
@@ -87,6 +87,9 @@
       // ปุ่มไปหน้า form.html
       document.getElementById("gotoForm").addEventListener("click", () => {
         window.location.href = "Form.html";
+      });
+      document.getElementById("gotoScan").addEventListener("click", () => {
+        window.location.href = "ScanQrcode.html";
       });
 
     } catch (err) {
