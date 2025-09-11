@@ -6,35 +6,54 @@
   <!-- ใช้ library สแกน QR -->
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
-    body {
-      font-family: 'Prompt', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+    html, body {
       margin: 0;
-      background: linear-gradient(135deg, #43cea2, #185a9d);
-      color: white;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Prompt', sans-serif;
+      background: black;
     }
-    h2 { margin-bottom: 20px; }
-    #reader { width: 300px; margin: auto; }
+    #reader {
+      width: 100%;
+      height: 100%;
+    }
+    #overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      border: 50px solid rgba(0,0,0,0.5); /* โซนมืดรอบๆ */
+      box-sizing: border-box;
+    }
+    #message {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 1.2rem;
+      text-shadow: 0 0 5px black;
+    }
   </style>
 </head>
 <body>
-  <h2>สแกน QR Code</h2>
   <div id="reader"></div>
+  <div id="overlay"></div>
+  <div id="message">สแกน QR Code ของคุณ</div>
 
   <script>
     async function main() {
       const html5QrCode = new Html5Qrcode("reader");
-      const config = { fps: 10, qrbox: 250 };
+
+      const config = { fps: 10, qrbox: { width: window.innerWidth, height: window.innerHeight } };
 
       html5QrCode.start(
         { facingMode: "environment" },
         config,
         qrCodeMessage => {
-          // qrCodeMessage คือรหัสจาก QR Code ทั้งหมด
           const trackingCode = qrCodeMessage.trim();
 
           if (!trackingCode) {
@@ -42,7 +61,6 @@
             return;
           }
 
-          // บันทึกลง Google Sheets
           fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
             method: "POST",
             body: new URLSearchParams({
@@ -52,19 +70,18 @@
           })
           .then(res => res.text())
           .then(data => {
-          if (data === "OK") {
-            alert("Scan QRCODE เรียบร้อยแล้ว!");
-          window.location.href = "Form.html";
-          } else {
-            alert("Scan QRCODE สำเร็จแต่ response ไม่ถูกต้อง!!: " + data);
-          }
+            if (data === "OK") {
+              alert("Scan QRCODE เรียบร้อยแล้ว!");
+              window.location.href = "Form.html";
+            } else {
+              alert("Scan QRCODE สำเร็จแต่ response ไม่ถูกต้อง!!: " + data);
+            }
           })
           .catch(err => {
-          console.error("Save error:", err);
+            console.error("Scan error:", err);
             alert("เกิดข้อผิดพลาดในการ Scan QRCODE!!!");
           });
 
-          // หยุดสแกน
           html5QrCode.stop();
         },
         errorMessage => {
