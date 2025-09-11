@@ -53,15 +53,15 @@
           .then(res => res.text())
           .then(data => {
           if (data === "OK") {
-            alert("บันทึก Tracking เรียบร้อยแล้ว!");
+            alert("Scan QRCODE เรียบร้อยแล้ว!");
           window.location.href = "Form.html";
           } else {
-            alert("บันทึกแล้วแต่ response ไม่ถูกต้อง: " + data);
+            alert("Scan QRCODE สำเร็จแต่ response ไม่ถูกต้อง!!: " + data);
           }
           })
           .catch(err => {
           console.error("Save error:", err);
-            alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+            alert("เกิดข้อผิดพลาดในการ Scan QRCODE!!!");
           });
 
           // หยุดสแกน
