@@ -78,13 +78,15 @@
           })
           .then(res => res.text())
           .then(data => {
+            data = data.trim(); // ลบ space / newline
             if (data === "OK") {
               alert("Scan QRCODE เรียบร้อยแล้ว!");
               window.location.href = "Form.html";
             } else {
               alert("Scan QRCODE สำเร็จแต่ response ไม่ถูกต้อง!!: " + data);
-            }
+          }
           })
+
           .catch(err => {
             console.error("Scan error:", err);
             alert("เกิดข้อผิดพลาดในการ Scan QRCODE!!!");
