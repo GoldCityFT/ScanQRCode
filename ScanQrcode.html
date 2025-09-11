@@ -52,13 +52,16 @@
           })
           .then(res => res.text())
           .then(data => {
-            alert("Scan QRCODE เรียบร้อยแล้ว!");
-            // redirect ไป Form.html
-            window.location.href = "Form.html";
+          if (data === "OK") {
+            alert("บันทึก Tracking เรียบร้อยแล้ว!");
+          window.location.href = "Form.html";
+          } else {
+            alert("บันทึกแล้วแต่ response ไม่ถูกต้อง: " + data);
+          }
           })
           .catch(err => {
-            console.error("Save error:", err);
-            alert("เกิดข้อผิดพลาดในการ Scan QRCODE");
+          console.error("Save error:", err);
+            alert("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
           });
 
           // หยุดสแกน
