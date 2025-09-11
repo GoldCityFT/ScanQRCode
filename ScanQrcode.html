@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>สแกน QR Code</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <!-- ใช้ library สแกน QR -->
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      color: white;
+    }
+    h2 { margin-bottom: 20px; }
+    #reader {
+      width: 300px;
+      margin: auto;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <h2>สแกน QR Code</h2>
+  <div id="reader"></div>
+  <div id="result"></div>
+
+  <script>
+    let userId = "";
+
+    async function main() {
+      await liff.init({ liffId: "2007956346-G5BmkAQl" });
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
+
+      // เก็บ userId ของ LINE
+      const profile = await liff.getProfile();
+      userId = profile.userId;
+
+      // เริ่มสแกน QR
+      const html5QrCode = new Html5Qrcode("reader");
+      const config = { fps: 10, qrbox: 250 };
+
+      html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        qrCodeMessage => {
+          document.getElementById("result").innerText = "QR Code: " + qrCodeMessage;
+
+          // เรียก function บันทึกข้อมูล
+          saveData(userId, qrCodeMessage);
+
+          // หยุดสแกนหลังเจอแล้ว
+          html5QrCode.stop();
+        },
+        errorMessage => {
+          console.log("Scanning...", errorMessage);
+        }
+      ).catch(err => {
+        console.error("Camera start error:", err);
+        alert("ไม่สามารถเปิดกล้องได้");
+      });
+    }
+
+    // ฟังก์ชันบันทึกข้อมูล
+    function saveData(userId, qrCode) {
+      // ✅ วิธีที่ 1: ส่งเข้า Google Sheets ผ่าน Google Apps Script
+      fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
+        method: "POST",
+        body: new URLSearchParams({
+          token: "Gl0D$Yt1@",
+          UserId: userId,
+          QRCode: qrCode
+        })
+      })
+      .then(res => res.text())
+      .then(data => {
+        alert("บันทึกข้อมูลเรียบร้อยแล้ว!");
+      })
+      .catch(err => {
+        console.error("Save error:", err);
+      });
+
+      // ✅ วิธีที่ 2: ถ้าคุณอยากส่งไป SQL Server → ให้ API ฝั่ง server มารับแทน
+      /*
+      fetch("https://yourserver.com/api/saveQR", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: userId, qrCode: qrCode })
+      });
+      */
+    }
+
+    main();
+  </script>
+</body>
+</html>
