@@ -8,17 +8,17 @@
   <style>
     body 
     {
-      margin: 0;
-      padding: 0;
-      font-family: 'Prompt', sans-serif;
-      background: linear-gradient(135deg, #00C300, #00A86B);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
+        margin: 0;
+        padding: 0;
+        font-family: 'Prompt', sans-serif;
+        background: linear-gradient(135deg, #00C300, #00A86B);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
     }
     h1 
     {
@@ -27,17 +27,17 @@
     }
     button 
     {
-      background: #ffffff;
-      color: #00A86B;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 50px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+     background: #ffffff;
+     color: #00A86B;
+     border: none;
+     padding: 15px 30px;
+     border-radius: 50px;
+     font-size: 1.2rem;
+     font-weight: bold;
+     cursor: pointer;
+     transition: all 0.3s ease;
+     margin: 10px;
+     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     button:hover 
     {
@@ -62,12 +62,58 @@
       background: white;
       color: #00A86B;
     }
+
+    
+    /* Popup Consent */
+#consentModal {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+#consentModalContent {
+  background:white;
+  color:black;
+  padding:30px;
+  border-radius:10px;
+  max-width:400px;
+  text-align:center;
+}
+#consentModalContent button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 30px;
+  border:none;
+  cursor:pointer;
+}
+#agreeBtn { background:#00A86B; color:white; }
+#declineBtn { background:#ccc; color:black; }
+#agreeBtn:hover { background:#007a4d; }
+#declineBtn:hover { background:#999; }  
   </style>
+  
 </head>
 <body>
+  
   <h2 id="welcome"></h2>
   <button id="gotoForm">ไปกรอกแบบสอบถาม</button>
   <button id="gotoScan">Scan QRCODE</button>
+  
+<!-- Popup Consent -->
+<div id="consentModal">
+  <div id="consentModalContent">
+    <p>ทางราจะเก็บข้อมูล LINE user ID ของคุณเพื่อเชื่อมกับ QR Code <br>คุณยินยอมหรือไม่?</p>
+    <button id="agreeBtn">ยินยอม</button>
+    <button id="declineBtn">ไม่ยินยอม</button>
+  </div>
+</div>
+
+
 <script>
   document.addEventListener("DOMContentLoaded", async () => {
     try {
@@ -88,9 +134,25 @@
       document.getElementById("gotoForm").addEventListener("click", () => {
         window.location.href = "Form.html";
       });
-      document.getElementById("gotoScan").addEventListener("click", () => {
-        window.location.href = "ScanQrcode.html";
-      });
+     // ปุ่ม Scan QRCODE → แสดง popup ยินยอม
+    const gotoScanBtn = document.getElementById("gotoScan");
+    const consentModal = document.getElementById("consentModal");
+    const agreeBtn = document.getElementById("agreeBtn");
+    const declineBtn = document.getElementById("declineBtn");
+
+    gotoScanBtn.addEventListener("click", () => {
+      consentModal.style.display = "flex";
+    });
+
+    agreeBtn.addEventListener("click", () => {
+      // ยินยอม → ไป ScanQrcode.html
+      window.location.href = "ScanQrcode.html";
+    });
+
+    declineBtn.addEventListener("click", () => {
+      // ไม่ยินยอม → กลับหน้า login (reload หน้าเดิม)
+      window.location.href = "Login.html";
+    });
 
     } catch (err) {
       console.error("LIFF error:", err);
