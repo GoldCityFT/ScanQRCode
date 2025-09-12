@@ -12,13 +12,32 @@
       width: 100%;
       font-family: 'Prompt', sans-serif;
       background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
+    /* กล่องสแกน QR */
     #reader {
       width: 100%;
-      height: 100%;
-      z-index: 0;
+      max-width: 600px;
+      aspect-ratio: 1/1; /* กล่อง square */
       position: relative;
     }
+
+    #message {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      text-shadow: 0 0 5px black;
+      z-index: 2;
+    }
+
+    /* Overlay (optional) */
     #overlay {
       position: absolute;
       top: 0;
@@ -30,18 +49,8 @@
       box-sizing: border-box;
       z-index: 1;
     }
-    #message {
-      position: absolute;
-      bottom: 20px;
-      width: 100%;
-      text-align: center;
-      color: white;
-      font-size: 3rem;
-      font-weight: bold;
-      text-shadow: 0 0 5px black;
-      z-index: 2;
-    }
-    /* popup */
+
+    /* Popup */
     #popup {
       display:none;
       position:fixed;
@@ -51,15 +60,17 @@
       align-items:center;
       z-index:9999;
     }
+
     #popupMessage {
       background:#fff;
       padding:40px;
       border-radius:15px;
       text-align:center;
-      font-size:28px;
+      font-size: clamp(24px, 5vw, 40px);
       font-weight:bold;
       color:#333;
       min-width:300px;
+      max-width:80%;
       box-shadow:0 5px 15px rgba(0,0,0,0.4);
     }
   </style>
@@ -75,7 +86,7 @@
   </div>
 
   <script>
-    let isScanned = false;
+    let isScanned = false; // flag กัน scan ซ้ำ
 
     function showPopup(message, callback) {
       const popup = document.getElementById("popup");
@@ -86,15 +97,13 @@
       setTimeout(() => {
         popup.style.display = "none";
         if (callback) callback();
-
-        // ✅ reset flag ถ้าไม่ redirect ไปไหน
-        isScanned = false;
+        isScanned = false; // reset ให้ scan ต่อได้
       }, 2000);
     }
 
     async function main() {
       const html5QrCode = new Html5Qrcode("reader");
-      const config = { fps: 10, qrbox: { width: 600, height: 300 } };
+      const config = { fps: 10, qrbox: { width: 300, height: 300 } }; // square box
 
       html5QrCode.start(
         { facingMode: "environment" },
@@ -121,8 +130,7 @@
             const text = (await res.text()).trim();
             if (text === "OK") {
               showPopup("✅ Scan สำเร็จ", () => {
-                // 👇 เช็กชื่อไฟล์ตรงนี้ให้ตรง
-                window.location.href = "Form.html";
+                window.location.href = "Form.html"; // แก้ชื่อไฟล์ให้ตรง
               });
             } else {
               showPopup("⚠️ Response ไม่ถูกต้อง: " + text);
@@ -131,8 +139,6 @@
             console.error(err);
             showPopup("❌ เกิดข้อผิดพลาด");
           }
-
-          html5QrCode.stop();
         },
         errorMessage => { console.log("Scanning...", errorMessage); }
       ).catch(err => { 
