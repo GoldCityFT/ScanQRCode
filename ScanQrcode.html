@@ -153,8 +153,8 @@
 const qrSize = Math.min(window.innerWidth, window.innerHeight) * 0.6; 
 // ใช้ด้านสั้นสุดของหน้าจอ * 0.6 เพื่อให้เป็นสี่เหลี่ยมสมมาตร
 document.documentElement.style.setProperty('--qrbox-size', `${qrSize}px`);
-
-
+// สร้าง config ให้ html5-qrcode
+const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };
 
 
       html5QrCode.start(
