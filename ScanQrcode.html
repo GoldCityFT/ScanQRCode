@@ -16,11 +16,10 @@
 
     #reader {
       width: 100%;
-      height: 75%;      /* ไม่ให้สูงเกินไป */
+      height: 75%;
       position: relative;
       z-index: 0;
     }
-
 
     /* overlay ครอบเต็มจอ */
     #overlay {
@@ -29,7 +28,7 @@
       width: 100%; height: 100%;
       pointer-events: none;
       z-index: 1;
-  }
+    }
 
     #message {
       position: absolute;
@@ -72,8 +71,7 @@
   <div id="reader"></div>
 
   <!-- overlay + crop box -->
-  <div id="overlay">
-  </div>
+  <div id="overlay"></div>
 
   <div id="message">สแกน QR Code ของคุณเป็นแนวตั้ง</div>
 
@@ -113,15 +111,13 @@
       const html5QrCode = new Html5Qrcode("reader");
       const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
 
-      // ขนาดสี่เหลี่ยมจัตุรัส อิงด้านสั้นของหน้าจอ
-
- const config = { 
-  fps: 10,
-  qrbox: function(viewfinderWidth, viewfinderHeight) {
-    const qrSize = viewfinderWidth * 0.6; // ใช้ 35% ของความกว้างจอ
-    return { width: qrSize, height: qrSize };
-  }
-};
+      const config = { 
+        fps: 10,
+        qrbox: function(viewfinderWidth, viewfinderHeight) {
+          const qrSize = viewfinderWidth * 0.6; 
+          return { width: qrSize, height: qrSize };
+        }
+      };
 
       html5QrCode.start(
         { facingMode: "environment" },
@@ -143,30 +139,16 @@
             return;
           }
 
-          try {
-            const res = await fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
-              method: "POST",
-              body: new URLSearchParams({
-                token: "Gl0D$Yt1@",
-                Tracking: trackingCode
-              })
-            });
+          // เก็บ trackingCode ไว้ใน sessionStorage
+          sessionStorage.setItem('tracking', trackingCode);
 
-            const text = (await res.text()).trim();
-            if(text === "OK"){
-              scannedCodes.push(trackingCode);
-              sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
+          // เพิ่มเข้า array ของ scannedCodes
+          scannedCodes.push(trackingCode);
+          sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
 
-              showPopup("✅ Scan QRCODE เรียบร้อยแล้ว!", ()=>{
-                window.location.href = "Form.html";
-              });
-            } else {
-              showPopup("⚠️ Scan สำเร็จ แต่ response ไม่ถูกต้อง: "+text);
-            }
-          } catch(err){
-            console.error(err);
-            showPopup("❌ เกิดข้อผิดพลาดในการ Scan");
-          }
+          showPopup("✅ Scan QRCODE เรียบร้อยแล้ว!", ()=>{
+            window.location.href = "Form.html";
+          });
         },
         errorMessage => { console.log("Scanning...", errorMessage); }
       ).catch(err=>{
