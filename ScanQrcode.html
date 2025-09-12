@@ -30,21 +30,6 @@
       z-index: 1;
   }
 
-/* กรอบตรงกลาง (เจาะรูเป็นสี่เหลี่ยม) */
-    #overlay::before {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: var(--qr-size);
-      height: var(--qr-size);
-      box-sizing: content-box;
-      border: 4px solid rgba(255,255,255,0.8);
-      border-radius: 8px;
-  }
-
-
-
     #message {
       position: absolute;
       bottom: 20px;
@@ -127,10 +112,16 @@
       const html5QrCode = new Html5Qrcode("reader");
       const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
 
-      const side = Math.min(window.innerWidth, window.innerHeight) * 0.6;
-      document.documentElement.style.setProperty("--qr-size", side + "px");
-
-      const config = { fps: 10, qrbox: { width: side, height: side } };
+      // ขนาดสี่เหลี่ยมจัตุรัส อิงด้านสั้นของหน้าจอ
+  const side = Math.min(window.innerWidth, window.innerHeight) * 0.6;
+  const config = { 
+  fps: 10,
+  qrbox: function(viewfinderWidth, viewfinderHeight) {
+    let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+    let boxSize = minEdge * 0.6; // 60% ของด้านสั้น
+    return { width: boxSize, height: boxSize };
+  }
+};
 
 
       html5QrCode.start(
