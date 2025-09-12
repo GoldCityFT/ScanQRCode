@@ -113,18 +113,11 @@
       const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
 
       // ขนาดสี่เหลี่ยมจัตุรัส อิงด้านสั้นของหน้าจอ
-  const side = Math.min(window.innerWidth, window.innerHeight) * 0.6;
-  const config = { 
-  fps: 10,
-  qrbox: function(viewfinderWidth, viewfinderHeight) {
-    // เอาด้านสั้นสุดของจอมาเป็นฐาน
-    let minEdge = Math.min(viewfinderWidth, viewfinderHeight);
 
-    // กำหนดขนาดเล็ก (30% ของด้านสั้น หรือ fix ค่าเช่น 250px)
-    let boxSize = Math.floor(minEdge * 0.3);
-
-    // return เป็นสี่เหลี่ยมจัตุรัส
-    return { width: boxSize, height: boxSize };
+    const config = { 
+      fps: 10,
+      qrbox: function(viewfinderWidth, viewfinderHeight) {
+        return { width: 600, height: 600 }; // fix เป็นสี่เหลี่ยมจัตุรัส 600x600
   }
 };
 
