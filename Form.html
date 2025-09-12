@@ -130,10 +130,16 @@ async function main() {
   const trackingCode = sessionStorage.getItem('tracking') || '';
   document.getElementById('Tracking').value = trackingCode;
 
-  if(!trackingCode){
-    alert('❌ ไม่พบ QR Code ที่สแกน กรุณาสแกนก่อน');
+if(!trackingCode){
+  modal.querySelector("p").textContent = '❌ ไม่พบ QR Code ที่สแกน กรุณาสแกนก่อน';
+  modal.style.display = "flex";
+  okBtn.onclick = () => {
+    modal.style.display = "none";
     window.location.href = "ScanQrcode.html";
-  }
+  };
+  return; // หยุดไม่ให้โหลดต่อ
+}
+
 }
 
 main();
@@ -168,23 +174,22 @@ form.addEventListener("submit", function(event) {
   const selectedColor = colorSelect.value;
 
   if (selectedItem && !selectedColor) {
-    event.preventDefault();
-    alert("กรุณาเลือกสีด้วยครับ");
+    event.preventDefault(); // หยุด submit
+    modal.querySelector("p").textContent = "กรุณาเลือกสีด้วยครับ";
+    modal.style.display = "flex";
+    okBtn.onclick = () => {
+      modal.style.display = "none";
+    };
     return;
   }
 
-  // หยุด form reload เพื่อแสดง popup
   event.preventDefault();
-
-  // ส่ง form ไป iframe (ซ่อนการ reload)
-  form.submit();
-
-  // แสดง popup
+  form.submit(); // ส่งไป iframe
+  modal.querySelector("p").textContent = "กรอกข้อมูลสำเร็จ!";
   modal.style.display = "flex";
-
-  // เคลียร์ trackingCode หลัง submit
   sessionStorage.removeItem('tracking');
 });
+
 
 okBtn.addEventListener("click", () => {
   modal.style.display = "none";
