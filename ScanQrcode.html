@@ -115,7 +115,7 @@
       const html5QrCode = new Html5Qrcode("reader");
       const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
 
-      const qrSize = Math.min(window.innerWidth, window.innerHeight) * 0.7; // ด้านสั้น * 0.6
+      const qrSize = Math.min(window.innerWidth, window.innerHeight) * 0.3; // ด้านสั้น * 0.6
       const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };
 
       html5QrCode.start(
