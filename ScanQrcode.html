@@ -114,14 +114,14 @@
 
       // ขนาดสี่เหลี่ยมจัตุรัส อิงด้านสั้นของหน้าจอ
 
-    const config = { 
+   const config = { 
   fps: 10,
   qrbox: function(viewfinderWidth, viewfinderHeight) {
-    const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-    const qrSize = minEdge * 0.4; 
+    const qrSize = viewfinderWidth * 0.6; // ใช้ % ของความกว้าง
     return { width: qrSize, height: qrSize };
   }
 };
+
 
 
 
