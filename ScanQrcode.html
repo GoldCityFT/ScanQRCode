@@ -116,15 +116,19 @@
 
       // ขนาดสี่เหลี่ยมจัตุรัส อิงด้านสั้นของหน้าจอ
 
-qrbox: function(viewfinderWidth, viewfinderHeight) {
-  let qrSize;
+const config = { 
+  fps: 10,
+  qrbox: function() {
+  const reader = document.getElementById("reader");
+  const viewfinderWidth = reader.clientWidth;
+  const viewfinderHeight = reader.clientHeight;
 
-  // ตรวจสอบว่ากว้างกว่า สูงกว่า
+  let qrSize;
   if(viewfinderWidth > viewfinderHeight){
-    // แนวนอน (landscape)
+    // แนวนอน
     qrSize = viewfinderHeight * 0.6;
   } else {
-    // แนวตั้ง (portrait)
+    // แนวตั้ง
     qrSize = viewfinderWidth * 0.6;
   }
 
@@ -133,6 +137,8 @@ qrbox: function(viewfinderWidth, viewfinderHeight) {
   return { width: qrSize, height: qrSize };
 }
 
+
+};
 
 
 
@@ -196,3 +202,4 @@ qrbox: function(viewfinderWidth, viewfinderHeight) {
   </script>
 </body>
 </html>
+พอทำเป็นแนวนอนแล้วมันไม่ปรับให้
