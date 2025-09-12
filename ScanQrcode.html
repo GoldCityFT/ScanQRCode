@@ -118,11 +118,24 @@
 
 const config = { 
   fps: 10,
-qrbox: function(viewfinderWidth, viewfinderHeight) {    // ใช้ด้านสั้นที่สุดของหน้าจอ window.innerWidth/innerHeight
-const qrSize = viewfinderWidth * 0.6; // ใช้ 35% ของความกว้างจอ
-return { width: qrSize, height: qrSize };    
+  qrbox: function(viewfinderWidth, viewfinderHeight) {
+    let qrSize;
+
+    if(window.innerWidth > window.innerHeight){
+      // แนวนอน (landscape)
+      qrSize = viewfinderHeight * 0.6;  // อิงความสูง reader
+    } else {
+      // แนวตั้ง (portrait)
+      qrSize = viewfinderWidth * 0.6;   // อิงความกว้าง reader
+    }
+
+    // ไม่เกินขนาด max
+    qrSize = Math.min(qrSize, 600);
+
+    return { width: qrSize, height: qrSize };
   }
 };
+
 
 
 
