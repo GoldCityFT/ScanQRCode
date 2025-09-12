@@ -21,6 +21,7 @@
       z-index: 0;
     }
 
+    /* overlay ครอบเต็มจอ + crop box */
     #overlay {
       position: absolute;
       top: 0;
@@ -28,9 +29,20 @@
       width: 100%;
       height: 100%;
       pointer-events: none;
-      border: 50px solid rgba(0,0,0,0.5);
-      box-sizing: border-box;
       z-index: 1;
+    }
+
+    #scan-box {
+      position: absolute;
+      width: 60vmin; /* ขนาดกรอบ scan */
+      height: 60vmin;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 4px solid #00ff00; /* สีเขียวชัดเจน */
+      border-radius: 10px;
+      box-sizing: border-box;
+      z-index: 2;
     }
 
     #message {
@@ -58,22 +70,26 @@
 
     #popupMessage {
       background:#fff;
-      padding:60px; /* เพิ่มจาก 40px */
-      border-radius:20px; /* เพิ่มความโค้งมน */
+      padding:60px;
+      border-radius:20px;
       text-align:center;
-      font-size: clamp(28px, 6vw, 48px); /* เพิ่มขนาดตัวอักษร */
+      font-size: clamp(28px, 6vw, 48px);
       font-weight:bold;
       color:#333;
-      min-width:350px; /* เพิ่มจาก 300px */
-      max-width:90%; /* เพิ่มจาก 80% */
-      box-shadow:0 8px 25px rgba(0,0,0,0.5); /* เงาให้เด่นขึ้น */
-}
-
+      min-width:350px;
+      max-width:90%;
+      box-shadow:0 8px 25px rgba(0,0,0,0.5);
+    }
   </style>
 </head>
 <body>
   <div id="reader"></div>
-  <div id="overlay"></div>
+
+  <!-- overlay + crop box -->
+  <div id="overlay">
+    <div id="scan-box"></div>
+  </div>
+
   <div id="message">สแกน QR Code ของคุณ</div>
 
   <!-- popup -->
@@ -84,7 +100,6 @@
   <script>
     let isScanned = false;
 
-    // ฟังก์ชันแสดง popup
     function showPopup(message, callback){
       const popup = document.getElementById("popup");
       const msgBox = document.getElementById("popupMessage");
@@ -94,11 +109,10 @@
       setTimeout(()=>{
         popup.style.display = "none";
         if(callback) callback();
-        isScanned = false; // ให้ scan ต่อได้
+        isScanned = false;
       }, 2000);
     }
 
-    // เช็ค QR ที่ scan รอบนี้
     function checkPreviouslyScanned() {
       const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
       if(scannedCodes.length > 0){
@@ -114,8 +128,7 @@
       const html5QrCode = new Html5Qrcode("reader");
       const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
 
-      // ตั้งค่า QR box ให้เป็น square ตาม viewport
-      const qrSize = Math.min(window.innerWidth, window.innerHeight);
+      const qrSize = Math.min(window.innerWidth, window.innerHeight) * 0.6; // match scan-box
       const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };
 
       html5QrCode.start(
@@ -131,7 +144,6 @@
             return;
           }
 
-          // เช็คซ้ำตอน scan
           if(scannedCodes.includes(trackingCode)){
             showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", ()=> {
               window.location.href = "Form.html";
@@ -150,7 +162,6 @@
 
             const text = (await res.text()).trim();
             if(text === "OK"){
-              // เก็บ QR ที่ scan รอบนี้
               scannedCodes.push(trackingCode);
               sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
 
@@ -172,7 +183,6 @@
       });
     }
 
-    // เรียก check+scan ทุกครั้ง แม้ย้อนกลับจาก Form.html
     window.addEventListener('pageshow', ()=>{
       checkPreviouslyScanned();
       main();
