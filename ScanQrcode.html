@@ -21,68 +21,52 @@
       z-index: 0;
     }
 
-/* overlay ครอบเต็มจอ แบ่งเป็น 4 แถบรอบขอบ */
 #overlay {
   position: absolute;
   top: 0; left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   pointer-events: none;
   z-index: 1;
 }
 
-/* แถบมืดบน */
-#overlay .top,
-#overlay .bottom,
-#overlay .left,
-#overlay .right {
+/* กำหนดขนาด crop box */
+:root {
+  --qrbox-size: 60vmin; /* กำหนดขนาดกลาง */
+}
+
+/* แถบมืดรอบนอก 4 ด้าน */
+#overlay .top {
   position: absolute;
+  top: 0; left: 0; right: 0;
+  height: calc(50% - var(--qrbox-size)/2);
   background-color: rgba(0,0,0,0.5);
 }
 
-/* ช่องกลางขนาดสี่เหลี่ยมเท่ากัน */
-:root {
-  --qrbox-size: 60vmin; /* กำหนดขนาดตรงกลาง */
-}
-
-/* แถบบน */
-#overlay .top {
-  top: 0; left: 0; right: 0;
-  height: calc(50% - var(--qrbox-size)/2);
-}
-/* แถบล่าง */
 #overlay .bottom {
+  position: absolute;
   bottom: 0; left: 0; right: 0;
   height: calc(50% - var(--qrbox-size)/2);
+  background-color: rgba(0,0,0,0.5);
 }
-/* แถบซ้าย */
+
 #overlay .left {
+  position: absolute;
   top: calc(50% - var(--qrbox-size)/2);
   bottom: calc(50% - var(--qrbox-size)/2);
   left: 0;
   width: calc(50% - var(--qrbox-size)/2);
+  background-color: rgba(0,0,0,0.5);
 }
-/* แถบขวา */
+
 #overlay .right {
+  position: absolute;
   top: calc(50% - var(--qrbox-size)/2);
   bottom: calc(50% - var(--qrbox-size)/2);
   right: 0;
   width: calc(50% - var(--qrbox-size)/2);
+  background-color: rgba(0,0,0,0.5);
 }
 
-/* optional: เพิ่มเส้นกรอบ crop box */
-#overlay::before {
-  content:"";
-  position:absolute;
-  top:50%; left:50%;
-  width: var(--qrbox-size);
-  height: var(--qrbox-size);
-  transform: translate(-50%, -50%);
-  border: 4px solid #00ff00; /* เส้นเขียวตรงกลาง */
-  border-radius: 8px;
-  box-sizing: border-box;
-  z-index:2;
-}
 
 
 
@@ -127,9 +111,14 @@
 <body>
   <div id="reader"></div>
 
-  <!-- overlay + crop box -->
+ 
   <div id="overlay">
-  </div>
+  <div class="top"></div>
+  <div class="bottom"></div>
+  <div class="left"></div>
+  <div class="right"></div>
+</div>
+
 
   <div id="message">สแกน QR Code ของคุณ</div>
 
@@ -171,8 +160,9 @@
 
 const qrSize = Math.min(window.innerWidth, window.innerHeight) * 0.6;
 document.documentElement.style.setProperty('--qrbox-size', `${qrSize}px`);
-
 const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };
+
+
 
 
       html5QrCode.start(
