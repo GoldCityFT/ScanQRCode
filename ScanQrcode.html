@@ -82,9 +82,8 @@
 
   <script>
     let isScanned = false;
-    // เก็บ QR ที่ scan ในรอบนี้
-    let scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
 
+    // ฟังก์ชันแสดง popup
     function showPopup(message, callback){
       const popup = document.getElementById("popup");
       const msgBox = document.getElementById("popupMessage");
@@ -98,74 +97,85 @@
       }, 2000);
     }
 
-   async function main(){
-  const html5QrCode = new Html5Qrcode("reader");
-
-  const qrSize = Math.min(window.innerWidth, window.innerHeight);
-  const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };
-
-  // **เช็ค QR ที่ scan รอบนี้ตอนโหลดหน้า**
-  if(scannedCodes.length > 0){
-    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", ()=>{ 
-      window.location.href = "Form.html"; 
-    });
-  }
-
-  html5QrCode.start(
-    { facingMode: "environment" },
-    config,
-    async qrCodeMessage => {
-      if(isScanned) return;
-      isScanned = true;
-
-      const trackingCode = qrCodeMessage.trim();
-      if(!trackingCode){
-        showPopup("❌ QR Code ไม่ถูกต้อง");
-        return;
-      }
-
-      // เช็คซ้ำตอน scan
-      if(scannedCodes.includes(trackingCode)){
+    // เช็ค QR ที่ scan รอบนี้
+    function checkPreviouslyScanned() {
+      const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+      if(scannedCodes.length > 0){
         showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", ()=> {
           window.location.href = "Form.html";
         });
-        return;
+        return true;
       }
+      return false;
+    }
 
-      try {
-        const res = await fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
-          method: "POST",
-          body: new URLSearchParams({
-            token: "Gl0D$Yt1@",
-            Tracking: trackingCode
-          })
-        });
+    async function main() {
+      const html5QrCode = new Html5Qrcode("reader");
+      const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
 
-        const text = (await res.text()).trim();
-        if(text === "OK"){
-          scannedCodes.push(trackingCode);
-          sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
+      // ตั้งค่า QR box ให้เป็น square ตาม viewport
+      const qrSize = Math.min(window.innerWidth, window.innerHeight);
+      const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };
 
-          showPopup("✅ Scan QRCODE เรียบร้อยแล้ว!", ()=>{
-            window.location.href = "Form.html";
-          });
-        } else {
-          showPopup("⚠️ Scan สำเร็จ แต่ response ไม่ถูกต้อง: "+text);
-        }
-      } catch(err){
-        console.error(err);
-        showPopup("❌ เกิดข้อผิดพลาดในการ Scan");
-      }
-    },
-    errorMessage => { console.log("Scanning...", errorMessage); }
-  ).catch(err=>{
-    console.error("Camera start error:", err);
-    showPopup("❌ ไม่สามารถเปิดกล้องได้");
-  });
-}
+      html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        async qrCodeMessage => {
+          if(isScanned) return;
+          isScanned = true;
 
+          const trackingCode = qrCodeMessage.trim();
+          if(!trackingCode){
+            showPopup("❌ QR Code ไม่ถูกต้อง");
+            return;
+          }
 
-    main();
+          // เช็คซ้ำตอน scan
+          if(scannedCodes.includes(trackingCode)){
+            showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", ()=> {
+              window.location.href = "Form.html";
+            });
+            return;
+          }
+
+          try {
+            const res = await fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
+              method: "POST",
+              body: new URLSearchParams({
+                token: "Gl0D$Yt1@",
+                Tracking: trackingCode
+              })
+            });
+
+            const text = (await res.text()).trim();
+            if(text === "OK"){
+              // เก็บ QR ที่ scan รอบนี้
+              scannedCodes.push(trackingCode);
+              sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
+
+              showPopup("✅ Scan QRCODE เรียบร้อยแล้ว!", ()=>{
+                window.location.href = "Form.html";
+              });
+            } else {
+              showPopup("⚠️ Scan สำเร็จ แต่ response ไม่ถูกต้อง: "+text);
+            }
+          } catch(err){
+            console.error(err);
+            showPopup("❌ เกิดข้อผิดพลาดในการ Scan");
+          }
+        },
+        errorMessage => { console.log("Scanning...", errorMessage); }
+      ).catch(err=>{
+        console.error("Camera start error:", err);
+        showPopup("❌ ไม่สามารถเปิดกล้องได้");
+      });
+    }
+
+    // เรียก check+scan ทุกครั้ง แม้ย้อนกลับจาก Form.html
+    window.addEventListener('pageshow', ()=>{
+      checkPreviouslyScanned();
+      main();
+    });
   </script>
 </body>
 </html>
