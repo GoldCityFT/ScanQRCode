@@ -16,10 +16,13 @@
 
     #reader {
       width: 100%;
-      height: 100%;
+      height: auto;      /* ไม่ให้สูงเกินไป */
+      max-height: 600px; /* fix สูงสุดตามต้องการ */
+      margin: 0 auto;
       position: relative;
       z-index: 0;
     }
+
 
     /* overlay ครอบเต็มจอ */
     #overlay {
@@ -114,13 +117,14 @@
 
       // ขนาดสี่เหลี่ยมจัตุรัส อิงด้านสั้นของหน้าจอ
 
-  const config = { 
+  const config = {
   fps: 10,
   qrbox: function(viewfinderWidth, viewfinderHeight) {
-    const qrSize = viewfinderWidth * 0.35; // ใช้ 35% ของความกว้างจอ
+    const qrSize = Math.min(viewfinderWidth, 600); // fix สูงสุด 600px
     return { width: qrSize, height: qrSize };
   }
 };
+
 
 
 
