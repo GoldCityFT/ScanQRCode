@@ -1,125 +1,179 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>QR Scan Symmetric Frame</title>
-<script src="https://unpkg.com/html5-qrcode"></script>
-<style>
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  background: black;
-  font-family: 'Prompt', sans-serif;
-  overflow: hidden;
+  <meta charset="UTF-8">
+  <title>สแกน QR Code</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Prompt', sans-serif;
+      background: black;
+    }
+
+    #reader {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 0;
+    }
+
+    /* overlay ครอบเต็มจอ + crop box */
+    #overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      box-sizing: border-box;
+      border: 50px solid rgba(0,0,0,0.5); /* ส่วนมืดรอบนอก */
 }
 
-#reader {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  z-index: 0;
-}
 
-/* Overlay 4 ด้านรอบกรอบ */
-.overlay {
-  position: absolute;
-  background: rgba(0,0,0,0.5);
-  z-index: 2;
-}
+    #message {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: 0 0 5px black;
+      z-index: 2;
+    }
 
-#frame {
-  position: absolute;
-  border: 4px solid lime; /* กรอบด้านนอก */
-  box-sizing: border-box;
-  z-index: 3;
-}
+    /* popup */
+    #popup {
+      display:none;
+      position:fixed;
+      top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.6);
+      justify-content:center;
+      align-items:center;
+      z-index:9999;
+    }
 
-#message {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-  text-align: center;
-  color: white;
-  font-size: 2rem;
-  font-weight: bold;
-  text-shadow: 0 0 5px black;
-  z-index:4;
-}
-</style>
+    #popupMessage {
+      background:#fff;
+      padding:60px;
+      border-radius:20px;
+      text-align:center;
+      font-size: clamp(28px, 6vw, 48px);
+      font-weight:bold;
+      color:#333;
+      min-width:350px;
+      max-width:90%;
+      box-shadow:0 8px 25px rgba(0,0,0,0.5);
+    }
+  </style>
 </head>
 <body>
-<div id="reader"></div>
+  <div id="reader"></div>
 
-<!-- กรอบ scan frame -->
-<div id="frame"></div>
+  <!-- overlay + crop box -->
+  <div id="overlay">
+  </div>
 
-<!-- overlay ด้านนอก 4 ด้าน -->
-<div id="overlay-top" class="overlay"></div>
-<div id="overlay-bottom" class="overlay"></div>
-<div id="overlay-left" class="overlay"></div>
-<div id="overlay-right" class="overlay"></div>
+  <div id="message">สแกน QR Code ของคุณ</div>
 
-<div id="message">สแกน QR Code ของคุณ</div>
+  <!-- popup -->
+  <div id="popup">
+    <div id="popupMessage"></div>
+  </div>
 
-<script>
-function updateFrame() {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  const size = Math.min(w, h) * 0.6; // กรอบจัตุรัส 60% ของด้านสั้น
+  <script>
+    let isScanned = false;
 
-  // กรอบด้านนอก
-  const frame = document.getElementById('frame');
-  frame.style.width = size + 'px';
-  frame.style.height = size + 'px';
-  frame.style.left = (w - size)/2 + 'px';
-  frame.style.top = (h - size)/2 + 'px';
+    function showPopup(message, callback){
+      const popup = document.getElementById("popup");
+      const msgBox = document.getElementById("popupMessage");
+      msgBox.innerHTML = message;
+      popup.style.display = "flex";
 
-  // overlay
-  document.getElementById('overlay-top').style.top = '0px';
-  document.getElementById('overlay-top').style.left = '0px';
-  document.getElementById('overlay-top').style.width = w + 'px';
-  document.getElementById('overlay-top').style.height = ((h - size)/2) + 'px';
-
-  document.getElementById('overlay-bottom').style.bottom = '0px';
-  document.getElementById('overlay-bottom').style.left = '0px';
-  document.getElementById('overlay-bottom').style.width = w + 'px';
-  document.getElementById('overlay-bottom').style.height = ((h - size)/2) + 'px';
-
-  document.getElementById('overlay-left').style.top = ((h - size)/2) + 'px';
-  document.getElementById('overlay-left').style.left = '0px';
-  document.getElementById('overlay-left').style.width = ((w - size)/2) + 'px';
-  document.getElementById('overlay-left').style.height = size + 'px';
-
-  document.getElementById('overlay-right').style.top = ((h - size)/2) + 'px';
-  document.getElementById('overlay-right').style.right = '0px';
-  document.getElementById('overlay-right').style.width = ((w - size)/2) + 'px';
-  document.getElementById('overlay-right').style.height = size + 'px';
-
-  return size;
-}
-
-async function startScanner() {
-  const html5QrCode = new Html5Qrcode("reader");
-  const size = updateFrame();
-
-  const config = { fps: 10, qrbox: { width: size, height: size } };
-
-  html5QrCode.start(
-    { facingMode: "environment" },
-    config,
-    qrCodeMessage => {
-      alert("Scan: " + qrCodeMessage);
-    },
-    errorMessage => {
-      console.log("Scanning...", errorMessage);
+      setTimeout(()=>{
+        popup.style.display = "none";
+        if(callback) callback();
+        isScanned = false;
+      }, 2000);
     }
-  );
-}
 
-window.addEventListener('resize', updateFrame);
-window.addEventListener('load', startScanner);
-</script>
+    function checkPreviouslyScanned() {
+      const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+      if(scannedCodes.length > 0){
+        showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", ()=> {
+          window.location.href = "Form.html";
+        });
+        return true;
+      }
+      return false;
+    }
+
+    async function main() {
+      const html5QrCode = new Html5Qrcode("reader");
+      const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+
+      const qrSize = Math.min(window.innerWidth, window.innerHeight) * 0.6; // match scan-box
+      const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };
+
+      html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        async qrCodeMessage => {
+          if(isScanned) return;
+          isScanned = true;
+
+          const trackingCode = qrCodeMessage.trim();
+          if(!trackingCode){
+            showPopup("❌ QR Code ไม่ถูกต้อง");
+            return;
+          }
+
+          if(scannedCodes.includes(trackingCode)){
+            showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", ()=> {
+              window.location.href = "Form.html";
+            });
+            return;
+          }
+
+          try {
+            const res = await fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
+              method: "POST",
+              body: new URLSearchParams({
+                token: "Gl0D$Yt1@",
+                Tracking: trackingCode
+              })
+            });
+
+            const text = (await res.text()).trim();
+            if(text === "OK"){
+              scannedCodes.push(trackingCode);
+              sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
+
+              showPopup("✅ Scan QRCODE เรียบร้อยแล้ว!", ()=>{
+                window.location.href = "Form.html";
+              });
+            } else {
+              showPopup("⚠️ Scan สำเร็จ แต่ response ไม่ถูกต้อง: "+text);
+            }
+          } catch(err){
+            console.error(err);
+            showPopup("❌ เกิดข้อผิดพลาดในการ Scan");
+          }
+        },
+        errorMessage => { console.log("Scanning...", errorMessage); }
+      ).catch(err=>{
+        console.error("Camera start error:", err);
+        showPopup("❌ ไม่สามารถเปิดกล้องได้");
+      });
+    }
+
+    window.addEventListener('pageshow', ()=>{
+      checkPreviouslyScanned();
+      main();
+    });
+  </script>
 </body>
 </html>
