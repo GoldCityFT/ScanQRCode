@@ -15,36 +15,51 @@
       background: black;
     }
     #reader {
-  width: 100%;
-  height: 100%;
-  z-index: 0; /* อยู่ด้านหลัง */
-  position: relative;
-}
-
-#overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  border: 50px solid rgba(0,0,0,0.5);
-  box-sizing: border-box;
-  z-index: 1;
-}
-
-#message {
-  position: absolute;
-  bottom: 20px;
-  width: 100%;
-  text-align: center;
-  color: white;
-  font-size: 3rem; /* ปรับใหญ่ขึ้น */
-  font-weight: bold;
-  text-shadow: 0 0 5px black;
-  z-index: 2; /* อยู่ด้านหน้าสุด */
-}
-
+      width: 100%;
+      height: 100%;
+      z-index: 0; /* อยู่ด้านหลัง */
+      position: relative;
+    }
+    #overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      border: 50px solid rgba(0,0,0,0.5);
+      box-sizing: border-box;
+      z-index: 1;
+    }
+    #message {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: 0 0 5px black;
+      z-index: 2;
+    }
+    /* ===== modal ===== */
+    #scanModal {
+      display:none;
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.7);
+      justify-content:center;
+      align-items:center;
+      z-index:1000;
+    }
+    #scanModal > div {
+      background:white;
+      padding:20px;
+      border-radius:10px;
+      text-align:center;
+      max-width:300px;
+    }
   </style>
 </head>
 <body>
@@ -52,44 +67,71 @@
   <div id="overlay"></div>
   <div id="message">สแกน QR Code ของคุณ</div>
 
+  <!-- modal -->
+  <div id="scanModal">
+    <div>
+      <p id="scanMessage">...</p>
+      <button id="scanOk">OK</button>
+    </div>
+  </div>
+
   <script>
+    const scanModal = document.getElementById("scanModal");
+    const scanMessage = document.getElementById("scanMessage");
+    const scanOk = document.getElementById("scanOk");
+
+    function showScanMessage(msg) {
+      scanMessage.textContent = msg;
+      scanModal.style.display = "flex";
+    }
+
+      scanOk.addEventListener("click", () => {
+      scanModal.style.display = "none";
+      // redirect ถ้าต้องการ
+      // window.location.href = "form.html";
+    });
+
     async function main() {
       const html5QrCode = new Html5Qrcode("reader");
       const config = { fps: 10, qrbox: { width: window.innerWidth, height: window.innerHeight } };
       
-    html5QrCode.start(
+      html5QrCode.start(
         { facingMode: "environment" },
         config,
         async qrCodeMessage => {
-            const trackingCode = qrCodeMessage.trim();
-            if(!trackingCode){ alert("QR Code ไม่ถูกต้อง"); return; }
+          const trackingCode = qrCodeMessage.trim();
+          if (!trackingCode) { showScanMessage("QR Code ไม่ถูกต้อง"); return; }
 
-            try {
-                // ส่งไป Apps Script ผ่าน fetch
-                const res = await fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
-                    method: "POST",
-                    body: new URLSearchParams({
-                        token: "Gl0D$Yt1@",
-                        Tracking: trackingCode
-                    })
-                });
-                const text = (await res.text()).trim();
-                if(text === "OK") alert("Scan QRCODE เรียบร้อยแล้ว!");
-                else alert("Scan QRCODE สำเร็จแต่ response ไม่ถูกต้อง!!: "+text);
-            } catch(err){
-                console.error("Scan error:", err);
-                alert("เกิดข้อผิดพลาดในการ Scan QRCODE");
+          try {
+            // ส่งไป Apps Script ผ่าน fetch
+            const res = await fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
+              method: "POST",
+              body: new URLSearchParams({
+                token: "Gl0D$Yt1@",
+                Tracking: trackingCode
+              })
+            });
+            const text = (await res.text()).trim();
+            if (text === "OK") {
+              showScanMessage("✅ Scan QRCODE เรียบร้อยแล้ว!");
+            } else {
+              showScanMessage("⚠️ Scan QRCODE สำเร็จ แต่ response ไม่ถูกต้อง: " + text);
             }
+          } catch(err) {
+            console.error("Scan error:", err);
+            showScanMessage("เกิดข้อผิดพลาดในการ Scan QRCODE");
+          }
 
-            html5QrCode.stop();
-            // ไป form.html ต่อได้ถ้าต้องการ
-            // window.location.href = "Form.html";
+          html5QrCode.stop();
         },
         errorMessage => { console.log("Scanning...", errorMessage); }
-    ).catch(err => { console.error("Camera start error:", err); alert("ไม่สามารถเปิดกล้องได้"); });
-}
+      ).catch(err => { 
+        console.error("Camera start error:", err); 
+        showScanMessage("ไม่สามารถเปิดกล้องได้"); 
+      });
+    }
 
-main();
-</script>
+    main();
+  </script>
 </body>
 </html>
