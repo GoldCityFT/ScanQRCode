@@ -15,69 +15,53 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
     }
 
     /* กล่องสแกน QR */
     #reader {
-      width: 90vw;          /* ใช้ความกว้างตาม viewport */
-      max-width: 600px;     /* จำกัดกว้างสูงสุด */
-      aspect-ratio: 1/1;    /* ให้เป็น square */
+      width: 90vw;         /* ใช้ความกว้างตาม viewport */
+      max-width: 600px;    /* จำกัดกว้างสูงสุด */
+      aspect-ratio: 1/1;   /* square */
       position: relative;
     }
 
     #message {
-      position: absolute;
-      bottom: 20px;
-      width: 100%;
+      margin-top: 10px;
       text-align: center;
       color: white;
       font-size: 2rem;
       font-weight: bold;
       text-shadow: 0 0 5px black;
-      z-index: 2;
-    }
-
-    /* Overlay (optional) */
-    #overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      border: 50px solid rgba(0,0,0,0.5);
-      box-sizing: border-box;
-      z-index: 1;
     }
 
     /* Popup */
     #popup {
-      display:none;
-      position:fixed;
+      display: none;
+      position: fixed;
       top:0; left:0; right:0; bottom:0;
-      background:rgba(0,0,0,0.6);
-      justify-content:center;
-      align-items:center;
-      z-index:9999;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
     }
 
     #popupMessage {
-      background:#fff;
-      padding:40px;
-      border-radius:15px;
-      text-align:center;
+      background: #fff;
+      padding: 40px;
+      border-radius: 15px;
+      text-align: center;
       font-size: clamp(24px, 5vw, 40px);
-      font-weight:bold;
-      color:#333;
-      min-width:300px;
-      max-width:80%;
-      box-shadow:0 5px 15px rgba(0,0,0,0.4);
+      font-weight: bold;
+      color: #333;
+      min-width: 300px;
+      max-width: 80%;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
     }
   </style>
 </head>
 <body>
   <div id="reader"></div>
-  <div id="overlay"></div>
   <div id="message">สแกน QR Code ของคุณ</div>
 
   <!-- popup -->
@@ -86,10 +70,7 @@
   </div>
 
   <script>
-    let isScanned = false; // flag กัน scan ซ้ำ
-    const readerElem = document.getElementById("reader");
-    const size = readerElem.offsetWidth; // ใช้ความกว้างของ #reader เป็นขนาดสี่เหลี่ยม
-    const config = { fps: 10, qrbox: { width: size, height: size } };
+    let isScanned = false;
 
     function showPopup(message, callback) {
       const popup = document.getElementById("popup");
@@ -99,15 +80,20 @@
 
       setTimeout(() => {
         popup.style.display = "none";
-        if (callback) callback();
+        if(callback) callback();
         isScanned = false; // reset ให้ scan ต่อได้
       }, 2000);
     }
 
     async function main() {
       const html5QrCode = new Html5Qrcode("reader");
-      
-     html5QrCode.start(
+
+      // ใช้ขนาด square จาก #reader หลังโหลดหน้า
+      const readerElem = document.getElementById("reader");
+      const size = readerElem.getBoundingClientRect().width;
+      const config = { fps: 10, qrbox: { width: size, height: size } };
+
+      html5QrCode.start(
         { facingMode: "environment" },
         config,
         async qrCodeMessage => {
@@ -115,7 +101,7 @@
           isScanned = true;
 
           const trackingCode = qrCodeMessage.trim();
-          if (!trackingCode) {
+          if(!trackingCode) {
             showPopup("❌ QR Code ไม่ถูกต้อง");
             return;
           }
@@ -130,9 +116,9 @@
             });
 
             const text = (await res.text()).trim();
-            if (text === "OK") {
+            if(text === "OK") {
               showPopup("✅ Scan สำเร็จ", () => {
-                window.location.href = "Form.html"; // แก้ชื่อไฟล์ให้ตรง
+                window.location.href = "Form.html";
               });
             } else {
               showPopup("⚠️ Response ไม่ถูกต้อง: " + text);
@@ -149,7 +135,8 @@
       });
     }
 
-    main();
+    // รอ DOM load ก่อนเรียก main
+    window.addEventListener('load', main);
   </script>
 </body>
 </html>
