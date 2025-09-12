@@ -23,7 +23,7 @@
       margin-top: 15px;
       font-weight: bold;
     }
-    input {
+    input, select {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -52,6 +52,7 @@
 <form id="surveyForm" action="https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec" method="POST" target="hidden_iframe">
   <input type="hidden" name="token" value="Gl0D$Yt1@">
   <input type="hidden" id="UserId" name="UserId">
+  <input type="hidden" id="Tracking" name="Tracking">
 
   <label>ชื่อ - นามสกุล (หรือชื่อเล่น)</label>
   <input type="text" name="DisplayName" required placeholder="ต้องระบุ">
@@ -72,10 +73,10 @@
     <option value="รองเท้าผ้าใบ">รองเท้าผ้าใบ</option>
   </select>
 
-<label>สี (ถ้ามี)</label>
-<select id="colorSelect" name="Color">
-  <option value="">-- เลือกสี --</option>
-</select>
+  <label>สี (ถ้ามี)</label>
+  <select id="colorSelect" name="Color">
+    <option value="">-- เลือกสี --</option>
+  </select>
 
   <label>ขนาด (ถ้ามี)</label>
   <select name="Size">
@@ -95,10 +96,10 @@
   <button type="submit">Submit</button>
 </form>
 
-  <!-- ใช้ iframe ซ่อนการโหลดหน้าใหม่ -->
-  <iframe name="hidden_iframe" style="display:none;"></iframe>
-  
-  <!-- popup modal -->
+<!-- ใช้ iframe ซ่อนการโหลดหน้าใหม่ -->
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+
+<!-- popup modal -->
 <div id="modal" style="
   display:none;
   position:fixed;
@@ -120,56 +121,38 @@
     <button id="okBtn">OK</button>
   </div>
 </div>
-</body>
-  
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<script> 
+<script>
 async function main() {
   await liff.init({ liffId: "2007956346-G5BmkAQl" });
   if (!liff.isLoggedIn()) liff.login();
   else document.getElementById("UserId").value = (await liff.getProfile()).userId;
+
+  const trackingCode = sessionStorage.getItem('tracking') || '';
+  document.getElementById('Tracking').value = trackingCode;
+
+  if(!trackingCode){
+    alert('❌ ไม่พบ QR Code ที่สแกน กรุณาสแกนก่อน');
+    window.location.href = "ScanQrcode.html";
+  }
 }
+
 main();
 
+const itemSelect = document.getElementById("itemSelect");
+const colorSelect = document.getElementById("colorSelect");
 const form = document.getElementById("surveyForm");
 const modal = document.getElementById("modal");
 const okBtn = document.getElementById("okBtn");
-  
-form.addEventListener("submit", function() {
-  const selectedItem = itemSelect.value;
-  const selectedColor = colorSelect.value;
 
-  // ถ้าเลือกสินค้าแล้ว แต่ไม่ได้เลือกสี  ห้าม submit
-  if (selectedItem && !selectedColor) {
-    event.preventDefault(); // หยุดการส่งฟอร์ม
-    alert("กรุณาเลือกสีด้วยครับ");
-    return;
-  }
-
-   // แสดง popup
-  modal.style.display = "flex";
-});
-
-  okBtn.addEventListener("click", () => {
-  modal.style.display = "none";   // ซ่อน popup
-  window.location.href = "Login.html";
-});
- // =========================================================== Filter สี รองเท้า =====================================================================
-const itemSelect = document.getElementById("itemSelect");
-const colorSelect = document.getElementById("colorSelect");
-
-// กำหนดตัวเลือกสีตามสินค้า
 const colorOptions = {
   "รองเท้าแตะ": ["ดำ", "ขาว"],
   "รองเท้าผ้าใบ": ["แดง", "ดำ", "ขาว", "ครีม", "เขียว", "น้ำเงิน"]
 };
 
-// ฟังก์ชันอัปเดต list สี
 function updateColors() {
   const selectedItem = itemSelect.value;
-  colorSelect.innerHTML = '<option value="">-- เลือกสี --</option>'; // reset
-
-  if (selectedItem && colorOptions[selectedItem]) {
+  colorSelect.innerHTML = '<option value="">-- เลือกสี --</option>';
+  if(selectedItem && colorOptions[selectedItem]){
     colorOptions[selectedItem].forEach(color => {
       const option = document.createElement("option");
       option.value = color;
@@ -178,9 +161,35 @@ function updateColors() {
     });
   }
 }
-
-// เมื่อเลือกสินค้าใหม่ → อัปเดต list สี
 itemSelect.addEventListener("change", updateColors);
-</script>
-</html>
 
+form.addEventListener("submit", function(event) {
+  const selectedItem = itemSelect.value;
+  const selectedColor = colorSelect.value;
+
+  if (selectedItem && !selectedColor) {
+    event.preventDefault();
+    alert("กรุณาเลือกสีด้วยครับ");
+    return;
+  }
+
+  // หยุด form reload เพื่อแสดง popup
+  event.preventDefault();
+
+  // ส่ง form ไป iframe (ซ่อนการ reload)
+  form.submit();
+
+  // แสดง popup
+  modal.style.display = "flex";
+
+  // เคลียร์ trackingCode หลัง submit
+  sessionStorage.removeItem('tracking');
+});
+
+okBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+  window.location.href = "Login.html";
+});
+</script>
+</body>
+</html>
