@@ -14,13 +14,12 @@
       background: black;
     }
 
-   #reader {
+    #reader {
   width: 100%;
-  height: 100%;
+  height: 75%;
   position: relative;
   z-index: 0;
 }
-
 
 
 
@@ -85,121 +84,121 @@
   </div>
 
   <script>
-let isScanned = false;
-let html5QrCode; // global
-let scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+    let isScanned = false;
 
-function showPopup(message, callback){
-  const popup = document.getElementById("popup");
-  const msgBox = document.getElementById("popupMessage");
-  msgBox.innerHTML = message;
-  popup.style.display = "flex";
+    function showPopup(message, callback){
+      const popup = document.getElementById("popup");
+      const msgBox = document.getElementById("popupMessage");
+      msgBox.innerHTML = message;
+      popup.style.display = "flex";
 
-  setTimeout(()=>{
-    popup.style.display = "none";
-    if(callback) callback();
-    isScanned = false;
-  }, 2000);
-}
-
-function checkPreviouslyScanned() {
-  if(scannedCodes.length > 0){
-    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", ()=> {
-      window.location.href = "Form.html";
-    });
-    return true;
-  }
-  return false;
-}
-
-async function onScanSuccess(qrCodeMessage) {
-  if(isScanned) return;
-  isScanned = true;
-
-  const trackingCode = qrCodeMessage.trim();
-  if(!trackingCode){
-    showPopup("❌ QR Code ไม่ถูกต้อง");
-    return;
-  }
-
-  if(scannedCodes.includes(trackingCode)){
-    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", ()=> {
-      window.location.href = "Form.html";
-    });
-    return;
-  }
-
-  try {
-    const res = await fetch("https://script.google.com/macros/s/YOUR_SCRIPT/exec", {
-      method: "POST",
-      body: new URLSearchParams({
-        token: "Gl0D$Yt1@",
-        Tracking: trackingCode
-      })
-    });
-
-    const text = (await res.text()).trim();
-    if(text === "OK"){
-      scannedCodes.push(trackingCode);
-      sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
-      showPopup("✅ Scan QRCODE เรียบร้อยแล้ว!", ()=>{
-        window.location.href = "Form.html";
-      });
-    } else {
-      showPopup("⚠️ Scan สำเร็จ แต่ response ไม่ถูกต้อง: "+text);
+      setTimeout(()=>{
+        popup.style.display = "none";
+        if(callback) callback();
+        isScanned = false;
+      }, 2000);
     }
-  } catch(err){
-    console.error(err);
-    showPopup("❌ เกิดข้อผิดพลาดในการ Scan");
+
+    function checkPreviouslyScanned() {
+      const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+      if(scannedCodes.length > 0){
+        showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", ()=> {
+          window.location.href = "Form.html";
+        });
+        return true;
+      }
+      return false;
+    }
+
+    async function main() {
+      const html5QrCode = new Html5Qrcode("reader");
+      const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+
+      // ขนาดสี่เหลี่ยมจัตุรัส อิงด้านสั้นของหน้าจอ
+
+const config = { 
+  fps: 10,
+  qrbox: function() {
+  const reader = document.getElementById("reader");
+  const viewfinderWidth = reader.clientWidth;
+  const viewfinderHeight = reader.clientHeight;
+
+  let qrSize;
+  if(viewfinderWidth > viewfinderHeight){
+    // แนวนอน
+    qrSize = viewfinderHeight * 0.6;
+  } else {
+    // แนวตั้ง
+    qrSize = viewfinderWidth * 0.6;
   }
+
+  qrSize = Math.min(qrSize, 600);
+
+  return { width: qrSize, height: qrSize };
 }
 
-function onScanFailure(errorMessage){
-  // console.log("Scanning...", errorMessage);
-}
 
-async function startScanner() {
-  if(html5QrCode){
-    try { await html5QrCode.stop(); } catch(e){ }
-  }
+};
 
-  html5QrCode = new Html5Qrcode("reader");
 
-  const config = { 
-    fps: 10,
-    qrbox: function() {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  let size = Math.min(w, h) * 0.6;
-  size = Math.min(size, 600);
-  return { width: size, height: size };
-}
 
-  };
 
-  await html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
-    .catch(err=>{
-      console.error("Camera start error:", err);
-      showPopup("❌ ไม่สามารถเปิดกล้องได้");
+      html5QrCode.start(
+        { facingMode: "environment" },
+        config,
+        async qrCodeMessage => {
+          if(isScanned) return;
+          isScanned = true;
+
+          const trackingCode = qrCodeMessage.trim();
+          if(!trackingCode){
+            showPopup("❌ QR Code ไม่ถูกต้อง");
+            return;
+          }
+
+          if(scannedCodes.includes(trackingCode)){
+            showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", ()=> {
+              window.location.href = "Form.html";
+            });
+            return;
+          }
+
+          try {
+            const res = await fetch("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", {
+              method: "POST",
+              body: new URLSearchParams({
+                token: "Gl0D$Yt1@",
+                Tracking: trackingCode
+              })
+            });
+
+            const text = (await res.text()).trim();
+            if(text === "OK"){
+              scannedCodes.push(trackingCode);
+              sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
+
+              showPopup("✅ Scan QRCODE เรียบร้อยแล้ว!", ()=>{
+                window.location.href = "Form.html";
+              });
+            } else {
+              showPopup("⚠️ Scan สำเร็จ แต่ response ไม่ถูกต้อง: "+text);
+            }
+          } catch(err){
+            console.error(err);
+            showPopup("❌ เกิดข้อผิดพลาดในการ Scan");
+          }
+        },
+        errorMessage => { console.log("Scanning...", errorMessage); }
+      ).catch(err=>{
+        console.error("Camera start error:", err);
+        showPopup("❌ ไม่สามารถเปิดกล้องได้");
+      });
+    }
+
+    window.addEventListener('pageshow', ()=>{
+      checkPreviouslyScanned();
+      main();
     });
-}
-
-
-// เมื่อ rotate device ให้ stop/start ใหม่
-window.addEventListener("orientationchange", () => {
-  setTimeout(() => {
-    startScanner();
-  }, 300); // 0.3 วินาที delay
-});
-
-
-// โหลดหน้า
-window.addEventListener('pageshow', ()=>{
-  checkPreviouslyScanned();
-  startScanner();
-});
-</script>
-
   </script>
 </body>
 </html>
