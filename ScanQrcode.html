@@ -1,3 +1,4 @@
+const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };  คือแค่เพิ่มบรรทัดนี้ไปกล้องก็ทำงานแล้ว 
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -12,7 +13,6 @@
       width: 100%;
       font-family: 'Prompt', sans-serif;
       background: black;
-      overflow: hidden;
     }
 
     #reader {
@@ -22,41 +22,21 @@
       z-index: 0;
     }
 
-    /* Overlay ด้านมืดรอบ scan frame */
-    #overlay {
-      position: absolute;
-      top:0; left:0;
-      width:100%; height:100%;
-      pointer-events:none;
-      z-index:2;
-    }
+#overlay .border {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60vmin;
+  height: 60vmin;
+  transform: translate(-50%, -50%);
+  border: 4px solid lime; /* สีเส้น border */
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 1;
+}
 
-    #overlay .mask {
-      position:absolute;
-      background: rgba(0,0,0,0.5);
-    }
 
-    #overlay .top, #overlay .bottom {
-      left:0; right:0; height:50%;
-    }
-    #overlay .top { top:0; }
-    #overlay .bottom { bottom:0; }
 
-    #overlay .left, #overlay .right {
-      top:50%; transform: translateY(-50%);
-      height:0; /* จะปรับด้วย JS */
-      width:50%;
-    }
-    #overlay .left { left:0; }
-    #overlay .right { right:0; }
-
-    /* กรอบ scan frame */
-    #scan-frame {
-      position: absolute;
-      border: 4px solid lime;
-      box-sizing: border-box;
-      z-index:3;
-    }
 
     #message {
       position: absolute;
@@ -64,10 +44,10 @@
       width: 100%;
       text-align: center;
       color: white;
-      font-size: 2rem;
+      font-size: 3rem;
       font-weight: bold;
       text-shadow: 0 0 5px black;
-      z-index:4;
+      z-index: 2;
     }
 
     /* popup */
@@ -98,19 +78,22 @@
 <body>
   <div id="reader"></div>
 
+ 
   <div id="overlay">
-    <div class="mask top"></div>
-    <div class="mask bottom"></div>
-    <div class="mask left"></div>
-    <div class="mask right"></div>
-  </div>
+  <div class="top"></div>
+  <div class="bottom"></div>
+  <div class="left"></div>
+  <div class="right"></div>
+</div>
 
-  <div id="scan-frame"></div>
+
   <div id="message">สแกน QR Code ของคุณ</div>
 
-  <div id="popup">
-    <div id="popupMessage"></div>
-  </div>
+  <!-- popup -->
+<div id="reader"></div>
+<div id="overlay">
+  <div class="border"></div>
+</div>
 
   <script>
     let isScanned = false;
@@ -139,39 +122,18 @@
       return false;
     }
 
-    function updateFrame() {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const size = Math.min(w, h) * 0.6; // สี่เหลี่ยมสมมาตร
-
-      const frame = document.getElementById('scan-frame');
-      frame.style.width = size + 'px';
-      frame.style.height = size + 'px';
-      frame.style.left = (w - size)/2 + 'px';
-      frame.style.top = (h - size)/2 + 'px';
-
-      // ปรับ overlay
-      document.querySelector('#overlay .top').style.height = ((h - size)/2) + 'px';
-      document.querySelector('#overlay .bottom').style.height = ((h - size)/2) + 'px';
-      document.querySelector('#overlay .left').style.width = ((w - size)/2) + 'px';
-      document.querySelector('#overlay .right').style.width = ((w - size)/2) + 'px';
-      document.querySelector('#overlay .left').style.height = size + 'px';
-      document.querySelector('#overlay .right').style.height = size + 'px';
-    }
-
     async function main() {
       const html5QrCode = new Html5Qrcode("reader");
       const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
 
-      updateFrame();
+const qrSize = Math.min(window.innerWidth, window.innerHeight) * 0.6;
+const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };
 
-      const size = document.getElementById('scan-frame').offsetWidth;
+// set overlay border ให้ตรงกับ qrbox
+document.querySelector('#overlay .border').style.width = `${qrSize}px`;
+document.querySelector('#overlay .border').style.height = `${qrSize}px`;
 
-      const config = {
-        fps: 10,
-        qrbox: { width: size, height: size },
-        verbose: false
-      };
+
 
       html5QrCode.start(
         { facingMode: "environment" },
@@ -223,8 +185,6 @@
         console.error("Camera start error:", err);
         showPopup("❌ ไม่สามารถเปิดกล้องได้");
       });
-
-      window.addEventListener('resize', updateFrame);
     }
 
     window.addEventListener('pageshow', ()=>{
