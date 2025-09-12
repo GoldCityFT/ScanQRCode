@@ -115,16 +115,18 @@
 
       // ขนาดสี่เหลี่ยมจัตุรัส อิงด้านสั้นของหน้าจอ
 
- const config = { 
+const config = { 
   fps: 10,
   qrbox: function(viewfinderWidth, viewfinderHeight) {
-    const qrSize = viewfinderWidth * 0.6; // ใช้ 35% ของความกว้างจอ
-    return { width: qrSize, height: qrSize };
+    // ใช้ด้านสั้นที่สุดของ viewfinder
+    const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+
+    // คำนวณ qrSize = 60% ของด้านสั้น, แต่ไม่เกิน 600px
+    const qrSize = Math.min(minEdge * 0.6, 600);
+
+    return { width: qrSize, height: qrSize }; // สี่เหลี่ยมจัตุรัส
   }
 };
-
-
-
 
 
       html5QrCode.start(
