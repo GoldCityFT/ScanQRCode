@@ -115,9 +115,11 @@
       // ขนาดสี่เหลี่ยมจัตุรัส อิงด้านสั้นของหน้าจอ
 
     const config = { 
-      fps: 10,
-      qrbox: function(viewfinderWidth, viewfinderHeight) {
-        return { width: 600, height: 600 }; // fix เป็นสี่เหลี่ยมจัตุรัส 600x600
+  fps: 10,
+  qrbox: function(viewfinderWidth, viewfinderHeight) {
+    const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+    const qrSize = minEdge * 0.4; 
+    return { width: qrSize, height: qrSize };
   }
 };
 
