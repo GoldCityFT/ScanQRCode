@@ -15,12 +15,11 @@
     }
 
     #reader {
-  width: 100%;
-  height: 75%;
-  position: relative;
-  z-index: 0;
-}
-
+      width: 100%;
+      height: 75%;      /* ไม่ให้สูงเกินไป */
+      position: relative;
+      z-index: 0;
+    }
 
 
     /* overlay ครอบเต็มจอ */
@@ -116,32 +115,13 @@
 
       // ขนาดสี่เหลี่ยมจัตุรัส อิงด้านสั้นของหน้าจอ
 
-const config = { 
+ const config = { 
   fps: 10,
-  qrbox: function() {
-  const reader = document.getElementById("reader");
-  const viewfinderWidth = reader.clientWidth;
-  const viewfinderHeight = reader.clientHeight;
-
-  let qrSize;
-  if(viewfinderWidth > viewfinderHeight){
-    // แนวนอน
-    qrSize = viewfinderHeight * 0.6;
-  } else {
-    // แนวตั้ง
-    qrSize = viewfinderWidth * 0.6;
+  qrbox: function(viewfinderWidth, viewfinderHeight) {
+    const qrSize = viewfinderWidth * 0.6; // ใช้ 35% ของความกว้างจอ
+    return { width: qrSize, height: qrSize };
   }
-
-  qrSize = Math.min(qrSize, 600);
-
-  return { width: qrSize, height: qrSize };
-}
-
-
 };
-
-
-
 
       html5QrCode.start(
         { facingMode: "environment" },
@@ -202,4 +182,3 @@ const config = {
   </script>
 </body>
 </html>
-พอทำเป็นแนวนอนแล้วมันไม่ปรับให้
