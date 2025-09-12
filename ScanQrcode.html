@@ -31,44 +31,34 @@
 
 /* กำหนดขนาด crop box */
 :root {
-  --qrbox-size: 60vmin; /* กำหนดขนาดกลาง */
+  --qrbox-size: 60vmin; /* ปรับเป็นขนาดที่ต้องการ */
 }
 
-/* แถบมืดรอบนอก 4 ด้าน */
-#overlay .top {
+/* overlay ครอบเต็มจอ */
+#overlay {
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: calc(50% - var(--qrbox-size)/2);
-  background-color: rgba(0,0,0,0.5);
+  top:0; left:0; width:100%; height:100%;
+  pointer-events:none;
+  z-index:1;
 }
 
-#overlay .bottom {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: calc(50% - var(--qrbox-size)/2);
-  background-color: rgba(0,0,0,0.5);
-}
-
-#overlay .left {
-  position: absolute;
-  top: calc(50% - var(--qrbox-size)/2);
-  bottom: calc(50% - var(--qrbox-size)/2);
-  left: 0;
-  width: calc(50% - var(--qrbox-size)/2);
-  background-color: rgba(0,0,0,0.5);
-}
-
+/* 4 แถบรอบๆ */
+#overlay .top,
+#overlay .bottom,
+#overlay .left,
 #overlay .right {
-  position: absolute;
-  top: calc(50% - var(--qrbox-size)/2);
-  bottom: calc(50% - var(--qrbox-size)/2);
-  right: 0;
-  width: calc(50% - var(--qrbox-size)/2);
+  position:absolute;
   background-color: rgba(0,0,0,0.5);
 }
 
-
-
+/* แถบบน */
+#overlay .top { top:0; left:0; right:0; height: calc(50% - var(--qrbox-size)/2); }
+/* แถบล่าง */
+#overlay .bottom { bottom:0; left:0; right:0; height: calc(50% - var(--qrbox-size)/2); }
+/* แถบซ้าย */
+#overlay .left { top: calc(50% - var(--qrbox-size)/2); bottom: calc(50% - var(--qrbox-size)/2); left:0; width: calc(50% - var(--qrbox-size)/2); }
+/* แถบขวา */
+#overlay .right { top: calc(50% - var(--qrbox-size)/2); bottom: calc(50% - var(--qrbox-size)/2); right:0; width: calc(50% - var(--qrbox-size)/2); }
 
 
     #message {
