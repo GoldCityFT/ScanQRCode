@@ -19,9 +19,9 @@
 
     /* กล่องสแกน QR */
     #reader {
-      width: 100%;
-      max-width: 600px;
-      aspect-ratio: 1/1; /* กล่อง square */
+      width: 90vw;          /* ใช้ความกว้างตาม viewport */
+      max-width: 600px;     /* จำกัดกว้างสูงสุด */
+      aspect-ratio: 1/1;    /* ให้เป็น square */
       position: relative;
     }
 
@@ -87,6 +87,9 @@
 
   <script>
     let isScanned = false; // flag กัน scan ซ้ำ
+    const readerElem = document.getElementById("reader");
+    const size = readerElem.offsetWidth; // ใช้ความกว้างของ #reader เป็นขนาดสี่เหลี่ยม
+    const config = { fps: 10, qrbox: { width: size, height: size } };
 
     function showPopup(message, callback) {
       const popup = document.getElementById("popup");
@@ -103,13 +106,12 @@
 
     async function main() {
       const html5QrCode = new Html5Qrcode("reader");
-      const config = { fps: 10, qrbox: { width: 300, height: 300 } }; // square box
-
-      html5QrCode.start(
+      
+     html5QrCode.start(
         { facingMode: "environment" },
         config,
         async qrCodeMessage => {
-          if (isScanned) return; 
+          if (isScanned) return;
           isScanned = true;
 
           const trackingCode = qrCodeMessage.trim();
