@@ -22,15 +22,29 @@
     }
 
     /* overlay ครอบเต็มจอ + crop box */
-    #overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 1;
-      box-sizing: border-box;
-      border: 50px solid rgba(0,0,0,0.5); /* ส่วนมืดรอบนอก */
+  #overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  box-sizing: border-box;
+
+  /* ใช้ clip-path ทำช่องตรงกลางเป็นสี่เหลี่ยม */
+  clip-path: inset(
+    calc(50% - var(--qrbox-size)/2)  /* top */
+    calc(50% - var(--qrbox-size)/2)  /* right */
+    calc(50% - var(--qrbox-size)/2)  /* bottom */
+    calc(50% - var(--qrbox-size)/2)  /* left */
+  );
+  background-color: rgba(0,0,0,0.5); /* ส่วนมืดรอบนอก */
 }
+
+/* กำหนดตัวแปร qrbox-size จาก JS */
+:root {
+  --qrbox-size: 60vmin;
+}
+
 
 
     #message {
@@ -115,8 +129,10 @@
       const html5QrCode = new Html5Qrcode("reader");
       const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
 
-      const qrSize = Math.min(window.innerWidth, window.innerHeight) * 0.6; // match scan-box
-      const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };
+     const qrSize = Math.min(window.innerWidth, window.innerHeight) * 0.6;
+document.documentElement.style.setProperty('--qrbox-size', `${qrSize}px`);
+
+const config = { fps: 10, qrbox: { width: qrSize, height: qrSize } };
 
       html5QrCode.start(
         { facingMode: "environment" },
