@@ -16,7 +16,7 @@
 
     #reader {
   width: 100%;
-  height: 100%;
+  height: 75%;
   max-height: 600px; /* ไม่เกินขนาดจอใหญ่ */
   position: relative;
   z-index: 0;
@@ -119,14 +119,9 @@
 
 const config = { 
   fps: 10,
-  qrbox: function(viewfinderWidth, viewfinderHeight) {
-    // ใช้ด้านสั้นที่สุดของหน้าจอ window.innerWidth/innerHeight
-    const minEdge = Math.min(window.innerWidth, window.innerHeight);
-
-    // qrSize = 60% ของด้านสั้น, แต่ไม่เกิน 600px
-    const qrSize = Math.min(minEdge * 0.6, 600);
-
-    return { width: qrSize, height: qrSize };
+qrbox: function(viewfinderWidth, viewfinderHeight) {    // ใช้ด้านสั้นที่สุดของหน้าจอ window.innerWidth/innerHeight
+const qrSize = viewfinderWidth * 0.6; // ใช้ 35% ของความกว้างจอ
+return { width: qrSize, height: qrSize };    
   }
 };
 
