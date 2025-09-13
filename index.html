@@ -55,6 +55,7 @@ p {
   max-width: 500px;
   width: 90%;
   text-align: center;
+  box-sizing: border-box;
 }
 
 /* ปุ่มยินยอม */
@@ -87,22 +88,24 @@ p {
 @media (max-width: 768px) {
   .modal-content {
     width: 95%;      /* กว้างสุดหน้าจอ */
-    padding: 100px 200px; /* กว้างเต็ม + สูงเพิ่ม */
+    max-width: none; /* ไม่จำกัด */
+    padding: 25px 20px; /* กว้างเต็ม + สูงเพิ่ม */
   }
 
   h1 {
-    font-size: 8vw; /* ใหญ่ขึ้นชัดเจน */
+    font-size: 2rem; /* ใช้ rem ให้ขนาดสอดคล้องกับมือถือ */
   }
 
   p {
-    font-size: 6.5vw;
+    font-size: 1.5rem;
   }
 
   .btn-agree,
   .btn-decline {
-    font-size: 5.5vw;    /* ตัวหนังสือปุ่มใหญ่ */
-    padding: 15px 25px;  /* ปุ่มใหญ่เต็ม popup */
+    font-size: 1.5rem;   /* ตัวอักษรปุ่มใหญ่ */
+    padding: 15px 20px;  /* ปุ่มใหญ่เต็ม popup */
     margin: 10px;
+    width: 80%;          /* ปุ่มกว้างเต็ม popup */
   }
 }
 
