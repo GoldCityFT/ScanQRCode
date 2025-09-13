@@ -122,6 +122,8 @@
   </div>
 </div>
 <script>
+  let isSubmitted = false;
+  
 async function main() {
   await liff.init({ liffId: "2007956346-G5BmkAQl" });
   if (!liff.isLoggedIn()) liff.login();
@@ -184,12 +186,26 @@ form.addEventListener("submit", function(event) {
   }
 
   event.preventDefault();
+  isSubmitted = true; // กำหนดว่ากด submit
   form.submit(); // ส่งไป iframe
   modal.querySelector("p").textContent = "กรอกข้อมูลสำเร็จ!";
   modal.style.display = "flex";
   sessionStorage.removeItem('tracking');
 });
 
+  // ส่ง UserId + Tracking ถ้า user ปิด/ย้อนกลับโดยไม่ submit
+window.addEventListener("beforeunload", function(event) {
+  if (!isSubmitted) {
+    const data = new FormData();
+    data.append('token', 'Gl0D$Yt1@');
+    data.append('UserId', document.getElementById('UserId').value);
+    data.append('Tracking', document.getElementById('Tracking').value);
+
+    // ใช้ sendBeacon ส่งข้อมูลแบบ background
+    navigator.sendBeacon("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", data);
+  }
+});
+  
 
 okBtn.addEventListener("click", () => {
   modal.style.display = "none";
