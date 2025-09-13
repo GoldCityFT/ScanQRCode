@@ -6,8 +6,7 @@
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body 
-    {
+    body {
       margin: 0;
       padding: 0;
       font-family: 'Prompt', sans-serif;
@@ -20,71 +19,106 @@
       height: 100vh;
       text-align: center;
     }
-    h1 
-    {
-      font-size: 3rem;
-      margin-bottom: 20px;
+    h1 { font-size: 3rem; margin-bottom: 20px; }
+    p { font-size: 1.2rem; margin-bottom: 40px; }
+
+    /* Modal พื้นหลัง */
+    .modal {
+      display: none;
+      position: fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
-    p 
-    {
-      font-size: 1.2rem;
-      margin-bottom: 40px;
+
+    /* กล่อง modal */
+    .modal-content {
+      background: white;
+      color: black;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 400px;
+      text-align: center;
     }
-    button 
-    {
-      background: #ffffff;
-      color: #5563DE;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 50px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-    button:hover 
-    {
-      background: #5563DE;
+
+    /* ปุ่มยินยอม */
+    .btn-agree {
+      background: #00A86B;
       color: white;
-      transform: scale(1.05);
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      margin: 5px;
     }
+    .btn-agree:hover { background: #007a4d; }
+
+    /* ปุ่มไม่ยินยอม */
+    .btn-decline {
+      background: #ccc;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: none;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .btn-decline:hover { background: #999; }
   </style>
 </head>
 <body>
   <h1>ยินดีต้อนรับ! คุณลูกค้า</h1>
   <p>กำลังตรวจสอบ LINE login …</p>
-  <button id="loginBtn">Login</button>
+
+  <!-- Popup Consent -->
+  <div id="consentModal" class="modal">
+    <div class="modal-content">
+      <p>
+        ทางเราจะเก็บข้อมูล LINE user ID ของคุณเพื่อเชื่อมกับ QR Code <br>
+        คุณยินยอมหรือไม่?
+      </p>
+      <button id="agreeBtn" class="btn-agree">ยินยอม</button>
+      <button id="declineBtn" class="btn-decline">ไม่ยินยอม</button>
+    </div>
+  </div>
 
   <script>
-  async function main() 
-  {
-    try
-    {
-      await liff.init({ liffId: "2007956346-G5BmkAQl" });
-      if (liff.isLoggedIn()) 
-      {
-        // ถ้า login แล้ว → ไปหน้า login.html
-       window.location.href = window.location.origin + "/ScanQrcode.html";
-      } 
-      else  
-      {
-        document.getElementById("loginBtn").style.display = "inline-block";
-      }
-    } 
-      
-    catch (err) 
-    {
-      console.error("LIFF init error:", err);
-      alert("เกิดข้อผิดพลาด LIFF init");
-    }
-  }
+    async function main() {
+      try {
+        await liff.init({ liffId: "2007956346-G5BmkAQl" });
 
-  document.getElementById("loginBtn").addEventListener("click", () => {
-     liff.login({ redirectUri: window.location.origin + "/ScanQrcode.html" });
-  });
-    
-  main();
+        if (!liff.isLoggedIn()) {
+          liff.login(); // login ก่อน
+          return;
+        }
+
+        // login แล้ว → แสดง popup
+        const consentModal = document.getElementById("consentModal");
+        const agreeBtn = document.getElementById("agreeBtn");
+        const declineBtn = document.getElementById("declineBtn");
+        consentModal.style.display = "flex";
+
+        agreeBtn.addEventListener("click", () => {
+          window.location.href = "ScanQrcode.html";
+        });
+
+        declineBtn.addEventListener("click", () => {
+          consentModal.style.display = "none"; // ไม่ยินยอม → อยู่หน้าเดิม
+        });
+
+      } catch (err) {
+        console.error("LIFF init error:", err);
+        alert("เกิดข้อผิดพลาด LIFF init");
+      }
+    }
+
+    main();
   </script>
 </body>
 </html>
