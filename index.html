@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>Hello World Pages</title>
+  <title>Line Login Pages</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -30,7 +30,7 @@
       left:0;
       width:100%;
       height:100%;
-      background: rgba(0, 195, 0, 0.7); /* สีเขียวธีม LINE โปร่งแสง */
+      background: linear-gradient(135deg, #00C300, #00A86B); /* สีเขียวธีม LINE โปร่งแสง */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -80,7 +80,7 @@
   <div id="consentModal" class="modal">
     <div class="modal-content">
       <p>
-        ทางเราจะเก็บข้อมูล LINE user ID ของคุณเพื่อเชื่อมกับ QR Code <br>
+        จำเป็นต้องใช้ LINE user ID ของคุณเพื่อเชื่อมกับ QR Code <br>
         คุณยินยอมหรือไม่?
       </p>
       <button id="agreeBtn" class="btn-agree">ยินยอม</button>
@@ -104,12 +104,17 @@
         const declineBtn = document.getElementById("declineBtn");
         consentModal.style.display = "flex";
 
+         // กดยินยอม → แสดงหน้า index 4 วิ แล้วไป ScanQrcode.html
         agreeBtn.addEventListener("click", () => {
-          window.location.href = "ScanQrcode.html";
+          consentModal.style.display = "none";
+          setTimeout(() => {
+            window.location.href = "ScanQrcode.html";
+          }, 4000); // 4000ms = 4 วินาที
         });
 
+        // กดไม่ยินยอม → ปิด LIFF กลับ LINE Chat
         declineBtn.addEventListener("click", () => {
-          consentModal.style.display = "none"; // ไม่ยินยอม → อยู่หน้าเดิม
+          liff.closeWindow();
         });
 
       } catch (err) {
