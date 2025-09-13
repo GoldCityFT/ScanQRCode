@@ -21,15 +21,15 @@ body {
 }
 
 h1 {
-  font-size: 6vw;
+  font-size: 10vw; /* ขนาดเดิมบนคอม */
   margin-bottom: 20px;
 }
 
 p {
-  font-size: 4vw;
+  font-size: 7vw;
   margin-bottom: 40px;
 }
-
+  
 /* Modal พื้นหลัง */
 .modal {
   display: none;
@@ -86,36 +86,35 @@ p {
 
 /* สำหรับมือถือเท่านั้น */
 @media (max-width: 768px) {
-  .modal-content {
-    width: 95%;      /* กว้างสุดหน้าจอ */
-    max-width: none; /* ไม่จำกัด */
-    padding: 25px 20px; /* กว้างเต็ม + สูงเพิ่ม */
-  }
-
   h1 {
-    font-size: 2rem; /* ใช้ rem ให้ขนาดสอดคล้องกับมือถือ */
+    font-size: 9vw; /* ยังคงใหญ่สำหรับมือถือ */
   }
 
   p {
-    font-size: 1.5rem;
+    font-size: 7vw;
+  }
+
+  .modal-content {
+    width: 95%;
+    max-width: none;
+    padding: 8vh 5vw; /* สูง + กว้าง popup */
   }
 
   .btn-agree,
   .btn-decline {
-    font-size: 1.5rem;   /* ตัวอักษรปุ่มใหญ่ */
-    padding: 15px 20px;  /* ปุ่มใหญ่เต็ม popup */
-    margin: 10px;
-    width: 80%;          /* ปุ่มกว้างเต็ม popup */
+    font-size: 6vw;
+    padding: 5vh 10vw;
+    width: 80%;
   }
 }
 
 /* สำหรับแท็บเล็ตและคอม */
 @media (min-width: 768px) {
   h1 {
-    font-size: 3rem;
+    font-size: 10vw; /* ขนาดใหญ่บนหน้าจอใหญ่ */
   }
   p {
-    font-size: 1.2rem;
+    font-size: 7vw;
   }
   .modal-content {
     padding: 30px 40px;
