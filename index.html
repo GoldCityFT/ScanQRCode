@@ -21,12 +21,12 @@ body {
 }
 
 h1 {
-  font-size: 8vw;
+  font-size: 6vw;
   margin-bottom: 20px;
 }
 
 p {
-  font-size: 5vw;
+  font-size: 4vw;
   margin-bottom: 40px;
 }
 
@@ -50,7 +50,7 @@ p {
 .modal-content {
   background: white;
   color: black;
-  padding: 5vw 8vw;
+  padding: 4vh 8vw;  /* ใช้ vh+vw ปรับสมดุล กว้างขึ้น */
   border-radius: 12px;
   max-width: 500px;
   width: 90%;
@@ -61,12 +61,12 @@ p {
 .btn-agree {
   background: #00A86B;
   color: white;
-  padding: 4vw 6vw;
+  padding: 3vh 5vw;
   border-radius: 30px;
   border: none;
   cursor: pointer;
-  margin: 3vw;
-  font-size: 5vw;
+  margin: 2vh;
+  font-size: 4vw;
 }
 .btn-agree:hover { background: #007a4d; }
 
@@ -74,39 +74,39 @@ p {
 .btn-decline {
   background: #ccc;
   color: black;
-  padding: 4vw 6vw;
+  padding: 3vh 5vw;
   border-radius: 30px;
   border: none;
   cursor: pointer;
-  margin: 3vw;
-  font-size: 5vw;
+  margin: 2vh;
+  font-size: 4vw;
 }
 .btn-decline:hover { background: #999; }
 
-/* ===== สำหรับมือถือเท่านั้น ===== */
+/* สำหรับมือถือเท่านั้น */
 @media (max-width: 767px) {
   .modal-content {
-    max-width: 98%;      /* เกือบเต็มหน้าจอ */
-    padding: 8vw 12vw;   /* บนล่าง 8vw, ซ้ายขวา 12vw → กว้างขึ้น */
+    max-width: 98%;   /* เกือบเต็มหน้าจอ */
+    padding: 8vh 10vw; /* ใช้ vh ปรับให้สูงขึ้น + vw กว้างขึ้น */
   }
 
   .btn-agree,
   .btn-decline {
-    font-size: 9vw;       /* ขยายข้อความปุ่มใหญ่ขึ้น */
-    padding: 8vw 12vw;   /* ปรับขนาดปุ่มใหญ่ขึ้น */
-    margin: 4vw;
+    font-size: 7vw;       /* ตัวอักษรปุ่มใหญ่ขึ้น */
+    padding: 6vh 12vw;   /* ปรับปุ่มใหญ่เต็ม popup */
+    margin: 3vh;
   }
 
   p {
-    font-size: 9vw;       /* ขยายข้อความ popup */
+    font-size: 7vw; /* ตัวอักษรใหญ่ขึ้น */
   }
 
   h1 {
-    font-size: 10vw;      /* หัวข้อใหญ่ขึ้น */
+    font-size: 9vw; /* หัวข้อใหญ่ขึ้น */
   }
 }
 
-/* ===== สำหรับแท็บเล็ตและคอม ===== */
+/* สำหรับแท็บเล็ตและคอม */
 @media (min-width: 768px) {
   h1 {
     font-size: 3rem;
