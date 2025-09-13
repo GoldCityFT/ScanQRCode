@@ -50,7 +50,7 @@
   .modal-content {
     background: white;
     color: black;
-    padding: 5vw; /* ใช้ vw ปรับตามหน้าจอ */
+    padding: 4vw 8vw;   /* บนล่าง 4vw, ซ้ายขวา 8vw → กว้างขึ้น ไม่สูงเกินไป */
     border-radius: 10px;
     max-width: 500px;
     width: 90%; /* ให้เต็มหน้าจอมือถือแต่ไม่เกิน 500px */
@@ -86,8 +86,8 @@
   /* สำหรับมือถือเท่านั้น */
 @media (max-width: 767px) {
   .modal-content {
-    max-width: 90%;   /* จาก 85% → 90% */
-    padding: 8vw;     /* เพิ่ม padding ให้กว้างขึ้น */
+    max-width: 95%;   /* จาก 85% → 90% */
+   padding: 6vw 10vw; /* บนล่างน้อยกว่า ซ้ายขวามากขึ้น */
   }
 
   .btn-agree,
