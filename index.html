@@ -52,8 +52,8 @@
   </style>
 </head>
 <body>
-  <h1>ยินดีต้อนรับ!</h1>
-  <p>นี่คือหน้าแรกของ LIFF App ตัวอย่าง</p>
+  <h1>ยินดีต้อนรับ! คุณลูกค้า</h1>
+  <p>กำลังตรวจสอบ LINE login …</p>
   <button id="loginBtn">Login</button>
 
   <script>
@@ -65,7 +65,7 @@
       if (liff.isLoggedIn()) 
       {
         // ถ้า login แล้ว → ไปหน้า login.html
-       window.location.href = window.location.origin + "/Login.html";
+       window.location.href = window.location.origin + "/ScanQrcode.html";
       } 
       else  
       {
@@ -81,7 +81,7 @@
   }
 
   document.getElementById("loginBtn").addEventListener("click", () => {
-     liff.login({ redirectUri: window.location.origin + "/Login.html" });
+     liff.login({ redirectUri: window.location.origin + "/ScanQrcode.html" });
   });
     
   main();
