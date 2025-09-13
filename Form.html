@@ -194,14 +194,12 @@ form.addEventListener("submit", function(event) {
 });
 
   // ส่ง UserId + Tracking ถ้า user ปิด/ย้อนกลับโดยไม่ submit
-window.addEventListener("beforeunload", function(event) {
-  if (!isSubmitted) {
+document.addEventListener("visibilitychange", function() {
+  if (!isSubmitted && document.visibilityState === "hidden") {
     const data = new FormData();
     data.append('token', 'Gl0D$Yt1@');
     data.append('UserId', document.getElementById('UserId').value);
     data.append('Tracking', document.getElementById('Tracking').value);
-
-    // ใช้ sendBeacon ส่งข้อมูลแบบ background
     navigator.sendBeacon("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", data);
   }
 });
