@@ -50,7 +50,7 @@ p {
 .modal-content {
   background: white;
   color: black;
-  padding: 4vh 8vw;  /* ใช้ vh+vw ปรับสมดุล กว้างขึ้น */
+  padding: 20px 30px;
   border-radius: 12px;
   max-width: 500px;
   width: 90%;
@@ -61,12 +61,12 @@ p {
 .btn-agree {
   background: #00A86B;
   color: white;
-  padding: 3vh 5vw;
+  padding: 12px 25px;
   border-radius: 30px;
   border: none;
   cursor: pointer;
-  margin: 2vh;
-  font-size: 4vw;
+  margin: 10px;
+  font-size: 1.2rem;
 }
 .btn-agree:hover { background: #007a4d; }
 
@@ -74,35 +74,35 @@ p {
 .btn-decline {
   background: #ccc;
   color: black;
-  padding: 3vh 5vw;
+  padding: 12px 25px;
   border-radius: 30px;
   border: none;
   cursor: pointer;
-  margin: 2vh;
-  font-size: 4vw;
+  margin: 10px;
+  font-size: 1.2rem;
 }
 .btn-decline:hover { background: #999; }
 
 /* สำหรับมือถือเท่านั้น */
 @media (max-width: 767px) {
   .modal-content {
-    max-width: 98%;   /* เกือบเต็มหน้าจอ */
-    padding: 8vh 10vw; /* ใช้ vh ปรับให้สูงขึ้น + vw กว้างขึ้น */
+    width: 95%;      /* กว้างสุดหน้าจอ */
+    padding: 30px 20px; /* กว้างเต็ม + สูงเพิ่ม */
+  }
+
+  h1 {
+    font-size: 8vw; /* ใหญ่ขึ้นชัดเจน */
+  }
+
+  p {
+    font-size: 6.5vw;
   }
 
   .btn-agree,
   .btn-decline {
-    font-size: 7vw;       /* ตัวอักษรปุ่มใหญ่ขึ้น */
-    padding: 6vh 12vw;   /* ปรับปุ่มใหญ่เต็ม popup */
-    margin: 3vh;
-  }
-
-  p {
-    font-size: 7vw; /* ตัวอักษรใหญ่ขึ้น */
-  }
-
-  h1 {
-    font-size: 9vw; /* หัวข้อใหญ่ขึ้น */
+    font-size: 5.5vw;    /* ตัวหนังสือปุ่มใหญ่ */
+    padding: 15px 25px;  /* ปุ่มใหญ่เต็ม popup */
+    margin: 10px;
   }
 }
 
@@ -126,8 +126,6 @@ p {
   }
 }
 </style>
-
-
 
 </head>
 <body>
