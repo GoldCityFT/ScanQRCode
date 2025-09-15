@@ -119,14 +119,17 @@
   <label>ชื่อ - นามสกุล (หรือชื่อเล่น)</label>
   <input type="text" name="DisplayName" required placeholder="ต้องระบุ">
 
-  <label>ที่อยู่</label>
+  <label>ที่อยู่ (ถ้ามี)</label>
   <input type="text" name="Location" >
 
+  
+ <!-- 
   <label>เบอร์โทร</label>
-  <input type="number" name="Phone" required placeholder="ต้องระบุ">
+  <input type="number" name="Phone" required placeholder="ต้องระบุ">  
+ -->
 
-  <label>Email</label>
-  <input type="email" name="Mail">
+  <label>รหัสไปรษณีย์</label>
+  <input type="email" name="Mail" required placeholder="ต้องระบุ">
 
   <label>สินค้าที่ซื้อล่าสุด (ถ้ามี)</label>
   <select id="itemSelect" name="ItemName">
@@ -151,10 +154,12 @@
     <option value="44">44</option>
     <option value="45">45</option>
   </select>
-
+  
+ <!-- 
   <label>Invoice (ถ้ามี)</label>
   <input type="text" name="Invoice" placeholder="เช่น INV1234">
-
+-->
+  
   <button type="submit">Submit</button>
 </form>
 
