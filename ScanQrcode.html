@@ -6,130 +6,158 @@
   <title>สแกน QR Code</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      font-family: 'Prompt', sans-serif;
-      background: black;
-    }
+  /* ปรับ body / html */
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: 'Prompt', sans-serif;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-    #reader {
-      width: 100%;
-      height: 75%;
-      position: relative;
-      z-index: 0;
-      display:none;
-    }
+  /* QR Reader */
+  #reader {
+    width: 100%;
+    height: 75%;
+    position: relative;
+    z-index: 0;
+    display:none;
+  }
 
-    /* overlay ครอบเต็มจอ */
-    #overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 1;
-      display:none;
-    }
+  #overlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    display:none;
+  }
 
-    #message {
-      position: absolute;
-      bottom: 20px;
-      width: 100%;
-      text-align: center;
-      color: white;
-      font-size: clamp(1rem, 4vw, 1.5rem);
-      font-weight: bold;
-      text-shadow: 0 0 5px black;
-      z-index: 2;
-      display:none;
-    }
+  #message {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    font-weight: bold;
+    text-shadow: 0 0 5px black;
+    z-index: 2;
+    display:none;
+  }
 
-    /* popup เลือกวิธี */
-    #popup {
-      display:flex;
-      position:fixed;
-      top:0; left:0; right:0; bottom:0;
-      background:rgba(0,0,0,0.6);
-      justify-content:center;
-      align-items:center;
-      z-index:9999;
-    }
+  /* popup เลือกวิธี */
+  #popup {
+    display:flex;
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    background:rgba(0,0,0,0.6);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+  }
 
-    #popupMessage {
-      background:#fff;
-      padding:40px;
-      border-radius:20px;
-      text-align:center;
-      font-size: clamp(20px, 5vw, 32px);
-      font-weight:bold;
-      color:#333;
-      min-width:300px;
-      max-width:90%;
-      box-shadow:0 8px 25px rgba(0,0,0,0.5);
-    }
+  #popupMessage {
+    background:#fff;
+    padding:40px;
+    border-radius:20px;
+    text-align:center;
+    font-size: clamp(20px, 5vw, 32px);
+    font-weight:bold;
+    color:#333;
+    min-width:300px;
+    max-width:90%;
+    box-shadow:0 8px 25px rgba(0,0,0,0.5);
+  }
 
-    #popup button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      border:none;
-      border-radius:8px;
-      background:#00C300;
-      color:white;
-      font-size:1rem;
-      cursor:pointer;
-    }
-    #popup button:hover { background:#009f2b; }
+  #popup button {
+    margin-top: 15px;
+    padding: 15px 30px;
+    border:none;
+    border-radius:12px;
+    background:#00C300;
+    color:white;
+    font-size:1.2rem;
+    cursor:pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  #popup button:hover { 
+    background:#009f2b; 
+    transform: scale(1.05);
+  }
 
-    /* manual input (อยู่นอก popup) */
-    #manualInput {
-      display:none;
-      flex-direction: column;
-      align-items:center;
-      margin-top:50px;
-      z-index:5;
-    }
+  /* manual input (กลางจอ, ใหญ่ขึ้น) */
+  #manualInput {
+    display:none;
+    flex-direction: column;
+    align-items:center;
+    justify-content:center;
+    position: fixed;
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    z-index:5;
+    width: 90%;
+    max-width: 400px;
+  }
 
-    #manualInput input {
-      padding:10px;
-      margin-top:10px;
-      border-radius:5px;
-      border:1px solid #ccc;
-      font-size:1rem;
-      width:80%;
-      max-width:400px;
-    }
+  #manualInput input {
+    padding:15px;
+    margin-top:10px;
+    border-radius:10px;
+    border:2px solid #ccc;
+    font-size:1.5rem;
+    width:100%;
+    box-sizing:border-box;
+    text-align:center;
+  }
 
-    #manualSubmit {
-      margin-top:15px;
-      padding:10px 20px;
-      border:none;
-      border-radius:8px;
-      background:#00C300;
-      color:white;
-      font-size:1rem;
-      cursor:pointer;
-    }
-    #manualSubmit:hover { background:#009f2b; }
+  #manualSubmit {
+    margin-top:20px;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    background:#00C300;
+    color:white;
+    font-size:1.5rem;
+    font-weight:bold;
+    cursor:pointer;
+    width:100%;
+    transition: all 0.2s ease-in-out;
+  }
+  #manualSubmit:hover { 
+    background:#009f2b;
+    transform: scale(1.05);
+  }
 
-    /* ปุ่มสลับโหมด */
-    #switchBtn {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #555;
-      color: white;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 1.2rem;
-      display:none;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-    }
-  </style>
+  /* ปุ่มสลับโหมดใหญ่และเด่นขึ้น */
+  #switchBtn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #ff5722;
+    color: white;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+    display:none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  #switchBtn:hover {
+    transform: scale(1.1);
+    background:#e64a19;
+  }
+</style>
 </head>
 <body>
   <div id="reader"></div>
