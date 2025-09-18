@@ -115,7 +115,7 @@ html, body {
   box-shadow:0 8px 25px rgba(0,0,0,0.5);
 }
 
-/* manual input (กลางจอ, ใหญ่ขึ้น) */
+/* manual input */
 #manualInput {
   display:none;
   flex-direction: column;
@@ -159,7 +159,7 @@ html, body {
   transform: scale(1.05);
 }
 
-/* ปุ่มสลับโหมดแบบใหม่ใหญ่และชัดเจน */
+/* ปุ่มสลับโหมด */
 #modeSwitch {
   position: fixed;
   bottom: 20px;
@@ -229,7 +229,7 @@ html, body {
 <script>
 let isScanned = false;
 let html5QrCode = null;
-let currentMode = null; // "scan" หรือ "manual"
+let currentMode = null;
 
 // อัปเดต active state ของปุ่มสลับโหมด
 function updateModeSwitch(){
@@ -237,15 +237,15 @@ function updateModeSwitch(){
   document.getElementById('manualSwitchBtn').classList.toggle('active', currentMode==='manual');
 }
 
-// ฟังก์ชันแสดง popup แจ้งเตือน
-function showAlertPopup(message, callback){
+// ฟังก์ชันแสดง popup แจ้งเตือน และไปหน้า Form
+function showAlertPopup(message){
   const popup = document.getElementById("popupAlert");
   const text = document.getElementById("popupAlertText");
   text.textContent = message;
   popup.style.display = "flex";
   setTimeout(()=>{
     popup.style.display = "none";
-    if(callback) callback();
+    window.location.href = "Form.html";
     isScanned = false;
   }, 2000);
 }
@@ -259,7 +259,7 @@ async function processCode(code){
     showAlertPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว");
     return;
   }
-  
+
   scannedCodes.push(code);
   sessionStorage.setItem('tracking', code);
   sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
@@ -275,7 +275,7 @@ async function processCode(code){
     console.error('Update backend failed:', err);
   }
 
-  showAlertPopup("✅ บันทึกเรียบร้อย!", ()=> { window.location.href = "Form.html"; });
+  showAlertPopup("✅ บันทึกเรียบร้อย!");
 }
 
 // Scan mode
@@ -283,7 +283,7 @@ async function scanQRCode() {
   const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
   if(scannedCodes.length > 0){
     showAlertPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว");
-    return; // block การ scan
+    return;
   }
 
   document.getElementById('popupMode').style.display = 'none';
@@ -304,7 +304,7 @@ function manualInputMode() {
   const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
   if(scannedCodes.length > 0){
     showAlertPopup("⚠️ คุณเคยกรอกข้อมูลนี้แล้ว");
-    return; // block การกรอก
+    return;
   }
 
   document.getElementById('popupMode').style.display = 'none';
@@ -325,21 +325,12 @@ document.getElementById('manualSubmit').onclick = async () => {
   await processCode(code);
 }
 
-// toggle mode
-async function toggleMethod() {
-  if(currentMode === "scan"){
-    if(html5QrCode) await html5QrCode.stop().catch(()=>{});
-    manualInputMode();
-  } else {
-    scanQRCode();
-  }
-}
-
 // QR function
 async function main() {
   if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-  const config = { fps:10, qrbox:(w,h)=>{ const s=w*0.6; return {width:s,height:s}; } };
-
+  const config = { fps:10, qrbox:(w,h)=>{ const s=w*0.6; return {width:s,height:s}; 
+    }
+    };
   html5QrCode.start(
     { facingMode: "environment" },
     config,
@@ -355,23 +346,34 @@ async function main() {
   });
 }
 
-// Event
+// Event ปุ่ม
 document.getElementById('popupScanBtn').onclick = scanQRCode;
 document.getElementById('popupManualBtn').onclick = manualInputMode;
 document.getElementById('cameraBtn').onclick = scanQRCode;
 document.getElementById('manualSwitchBtn').onclick = manualInputMode;
 
-// หน้าโหลด / reload
+// toggle mode
+async function toggleMethod() {
+  if(currentMode === "scan"){
+    if(html5QrCode) await html5QrCode.stop().catch(()=>{});
+    manualInputMode();
+  } else {
+    scanQRCode();
+  }
+}
+
+// โหลดหน้า / reload
 window.addEventListener('pageshow', () => {
   const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
   if(scannedCodes.length > 0){
-    // แสดง alert popup แทน popup เลือกโหมด
+    // ถ้าเคยสแกนแล้ว → แจ้งเตือน และไป Form
     showAlertPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว");
   } else {
-    // ยังไม่เคยสแกน → popup เลือกโหมด
+    // ยังไม่เคยสแกน → แสดง popup เลือกโหมด
     document.getElementById('popupMode').style.display = 'flex';
   }
 });
 </script>
 </body>
 </html>
+
