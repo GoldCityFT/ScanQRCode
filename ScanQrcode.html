@@ -96,6 +96,23 @@
       border:1px solid #ccc;
       font-size:1rem;
     }
+
+    #switchBtn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #555;
+  color: white;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 1.2rem;
+  display:none; /* ซ่อนตอนเริ่ม */
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
   </style>
 </head>
 <body>
@@ -119,6 +136,9 @@
     </div>
   </div>
 
+       <!-- ปุ่มสลับโหมด -->
+  <button id="switchBtn">🔄</button>
+  
  <script>
 let isScanned = false;
 
@@ -191,6 +211,7 @@ async function scanQRCode() {
   document.getElementById('reader').style.display = 'block';
   document.getElementById('overlay').style.display = 'block';
   document.getElementById('message').style.display = 'block';
+  document.getElementById('switchBtn').style.display = 'flex';
   main();
 }
 
@@ -199,6 +220,7 @@ function manualInput() {
   document.getElementById('scanBtn').style.display = 'none';
   document.getElementById('manualBtn').style.display = 'none';
   document.getElementById('manualInput').style.display = 'flex';
+  document.getElementById('switchBtn').style.display = 'flex';
 }
 
 // กด Manual submit
@@ -207,6 +229,31 @@ document.getElementById('manualSubmit').onclick = async () => {
   if(!code){ alert("กรุณากรอกโค้ดด้วยครับ"); return; }
   await processCode(code);
 };
+
+// ฟังก์ชันสลับโหมด
+function toggleMethod() {
+  const reader = document.getElementById('reader');
+  const overlay = document.getElementById('overlay');
+  const msg = document.getElementById('message');
+  const manualDiv = document.getElementById('manualInput');
+  const manualInputBox = document.getElementById('manualCode');
+
+  if(reader.style.display === 'block'){ 
+    // ตอนนี้เป็นโหมด Scan -> สลับไป Manual
+    reader.style.display = 'none';
+    overlay.style.display = 'none';
+    msg.style.display = 'none';
+    manualInputBox.value = ''; // ล้างค่าเก่า
+    manualDiv.style.display = 'flex';
+  } else { 
+    // ตอนนี้เป็นโหมด Manual -> สลับไป Scan
+    manualDiv.style.display = 'none';
+    scanQRCode();
+  }
+}
+
+// Event listener ปุ่มสลับ
+document.getElementById('switchBtn').onclick = toggleMethod;
 
 // QR scan function
 async function main() {
