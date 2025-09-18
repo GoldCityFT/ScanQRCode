@@ -21,90 +21,24 @@ body {
   text-align: center;
 }
 
-h1 {
+h1
+  {
   font-size: 2.5rem; /* ขนาดคงที่สำหรับคอม */
   margin-bottom: 20px;
-}
+  }
 
-p {
+p 
+  {
   font-size: 1.2rem; /* ขนาดคงที่สำหรับคอม */
   margin-bottom: 40px;
-}
+  }
   
-/* Modal พื้นหลัง */
-.modal {
-  display: none;
-  position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background: linear-gradient(135deg, #00C300, #00A86B);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 10px;
-}
-
-/* กล่อง modal */
-.modal-content {
-  background: white;
-  color: black;
-  padding: 20px 30px;
-  border-radius: 12px;
-  max-width: 500px;
-  width: 90%;
-  text-align: center;
-  box-sizing: border-box;
-}
-
-/* ปุ่มยินยอม */
-.btn-agree {
-  background: #00A86B;
-  color: white;
-  padding: 12px 25px;
-  border-radius: 30px;
-  border: none;
-  cursor: pointer;
-  margin: 10px;
-  font-size: 1.2rem;
-}
-.btn-agree:hover { background: #007a4d; }
-
-/* ปุ่มไม่ยินยอม */
-.btn-decline {
-  background: #ccc;
-  color: black;
-  padding: 12px 25px;
-  border-radius: 30px;
-  border: none;
-  cursor: pointer;
-  margin: 10px;
-  font-size: 1.2rem;
-}
-.btn-decline:hover { background: #999; }
-
 /* สำหรับมือถือเท่านั้น */
-@media (max-width: 768px) {
-  h1 {
-    font-size: 2.5rem; /* พอดีสำหรับมือถือ */
+ @media (max-width: 768px) 
+  {
+      h1 { font-size: 2.5rem; }
+      p { font-size: 1.4rem; }
   }
-  p {
-    font-size: 1.4rem;
-  }
-  .modal-content {
-    width: 80%;       /* กว้างเต็มหน้าจอเกือบสุด */
-    max-width: none;  /* ไม่จำกัด */
-    padding: 20px 15px; /* กว้างด้านใน + สูงพอเหมาะ */
-  }
-  .btn-agree,
-  .btn-decline {
-    font-size: 1.4rem;   /* ตัวอักษรใหญ่พออ่าน */
-    padding: 12px 20px;  /* ปุ่มสูงและกว้างพอดี */
-    width: 75%;          /* ปุ่มเต็ม popup */
-  }
-}
 
 </style>
 
@@ -112,19 +46,7 @@ p {
 <body>
   <h1>ยินดีต้อนรับ! คุณลูกค้า</h1>
   <p>กำลังตรวจสอบ LINE login …</p>
-
-  <!-- Popup Consent -->
-  <div id="consentModal" class="modal">
-    <div class="modal-content">
-      <p>
-        จำเป็นต้องใช้ LINE user ID ของคุณเพื่อเชื่อมกับ QR Code <br>
-        คุณยินยอมหรือไม่?
-      </p>
-      <button id="agreeBtn" class="btn-agree">ยินยอม</button>
-      <button id="declineBtn" class="btn-decline">ไม่ยินยอม</button>
-    </div>
-  </div>
-
+  
   <script>
     async function main() {
       try {
@@ -135,24 +57,8 @@ p {
           return;
         }
 
-        // login แล้ว → แสดง popup
-        const consentModal = document.getElementById("consentModal");
-        const agreeBtn = document.getElementById("agreeBtn");
-        const declineBtn = document.getElementById("declineBtn");
-        consentModal.style.display = "flex";
-
-         // กดยินยอม → แสดงหน้า index 4 วิ แล้วไป ScanQrcode.html
-        agreeBtn.addEventListener("click", () => {
-          consentModal.style.display = "none";
-          setTimeout(() => {
-            window.location.href = "ScanQrcode.html";
-          }, 4000); // 4000ms = 4 วินาที
-        });
-
-        // กดไม่ยินยอม → ปิด LIFF กลับ LINE Chat
-        declineBtn.addEventListener("click", () => {
-          liff.closeWindow();
-        });
+      // login แล้ว → ไปหน้า ScanQrcode.html ทันที
+        window.location.href = "ScanQrcode.html";
 
       } catch (err) {
         console.error("LIFF init error:", err);
