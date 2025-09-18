@@ -19,6 +19,7 @@
       height: 75%;
       position: relative;
       z-index: 0;
+      display:none; /* ซ่อนตอนเริ่ม */
     }
 
     /* overlay ครอบเต็มจอ */
@@ -28,6 +29,7 @@
       width: 100%; height: 100%;
       pointer-events: none;
       z-index: 1;
+      display:none; /* ซ่อนตอนเริ่ม */
     }
 
     #message {
@@ -40,11 +42,12 @@
       font-weight: bold;
       text-shadow: 0 0 5px black;
       z-index: 2;
+      display:none; /* ซ่อนตอนเริ่ม */
     }
 
     /* popup */
     #popup {
-      display:none;
+      display:flex;
       position:fixed;
       top:0; left:0; right:0; bottom:0;
       background:rgba(0,0,0,0.6);
@@ -65,6 +68,33 @@
       max-width:90%;
       box-shadow:0 8px 25px rgba(0,0,0,0.5);
     }
+     #popup button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border:none;
+      border-radius:8px;
+      background:#00C300;
+      color:white;
+      font-size:1rem;
+      cursor:pointer;
+    }
+
+    #popup button:hover {
+      background:#009f2b;
+    }
+
+    #manualInput {
+      display:none;
+      flex-direction: column;
+    }
+
+    #manualInput input {
+      padding:10px;
+      margin-top:10px;
+      border-radius:5px;
+      border:1px solid #ccc;
+      font-size:1rem;
+    }
   </style>
 </head>
 <body>
@@ -75,20 +105,27 @@
 
   <div id="message">สแกน QR Code ของคุณเป็นแนวตั้ง</div>
 
-  <!-- popup -->
+  <!-- popup เลือก Scan / Manual -->
   <div id="popup">
-    <div id="popupMessage"></div>
+    <div id="popupMessage">
+      <p>กรุณาเลือกวิธีเข้ารหัส</p>
+      <button id="scanBtn">📷 สแกน QR Code</button>
+      <button id="manualBtn">✏️ กรอกด้วยตัวเอง</button>
+      <div id="manualInput">
+        <input type="text" id="manualCode" placeholder="กรอกโค้ดด้วยตัวเอง">
+        <button id="manualSubmit">ยืนยัน</button>
+      </div>
+    </div>
   </div>
 
   <script>
     let isScanned = false;
 
-    function showPopup(message, callback){
+  function showPopup(message, callback){
       const popup = document.getElementById("popup");
       const msgBox = document.getElementById("popupMessage");
-      msgBox.innerHTML = message;
+      msgBox.querySelector('p').textContent = message;
       popup.style.display = "flex";
-
       setTimeout(()=>{
         popup.style.display = "none";
         if(callback) callback();
@@ -107,6 +144,43 @@
       return false;
     }
 
+      async function scanQRCode() {
+      document.getElementById('popup').style.display = 'none';
+      document.getElementById('reader').style.display = 'block';
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('message').style.display = 'block';
+
+      // เรียก main() ของ QR code scan ของคุณโดยไม่แก้ไข
+      main();
+    }
+
+    function manualInput() {
+      document.getElementById('scanBtn').style.display = 'none';
+      document.getElementById('manualBtn').style.display = 'none';
+      const manualDiv = document.getElementById('manualInput');
+      manualDiv.style.display = 'flex';
+    }
+
+    document.getElementById('scanBtn').onclick = scanQRCode;
+    document.getElementById('manualBtn').onclick = manualInput;
+
+    document.getElementById('manualSubmit').onclick = () => {
+      const code = document.getElementById('manualCode').value.trim();
+      if(!code){
+        alert("กรุณากรอกโค้ดด้วยครับ");
+        return;
+      }
+      // เก็บค่า sessionStorage เช่นเดียวกับ QR code
+      sessionStorage.setItem('tracking', code);
+      const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+      scannedCodes.push(code);
+      sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
+      showPopup("✅ กรอกโค้ดเรียบร้อย!", ()=> {
+        window.location.href = "Form.html";
+      });
+    }
+  
+    // QR scan function ของคุณ ไม่แก้ไข
     async function main() {
       const html5QrCode = new Html5Qrcode("reader");
       const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
@@ -159,7 +233,7 @@
 
     window.addEventListener('pageshow', ()=>{
       checkPreviouslyScanned();
-      main();
+      // main() จะเรียกตอนผู้ใช้กด Scan เท่านั้น
     });
   </script>
 </body>
