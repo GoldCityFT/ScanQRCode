@@ -271,9 +271,15 @@ async function scanQRCode() {
   isScanned = false;
 
     // --- เช็กรหัสที่เคยสแกนก่อนเริ่ม ---
-  const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+   const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
   if(scannedCodes.length > 0){
-    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", null);
+    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", null, true);
+    document.getElementById('reader').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+    document.getElementById('message').style.display = 'none';
+    currentMode = null;
+    updateModeSwitch();
+    return;
   }
   
   main();
@@ -287,6 +293,16 @@ function manualInputMode() {
   document.getElementById('message').style.display = 'none';
   document.getElementById('manualInput').style.display = 'flex';
 
+  const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+  if(scannedCodes.length > 0){
+    // เคยสแกน/กรอกแล้ว → แจ้ง popup และ block input
+    showPopup("⚠️ คุณเคยกรอกข้อมูลนี้แล้ว", null, true);
+    document.getElementById('manualInput').style.display = 'none';
+    currentMode = null;
+    updateModeSwitch();
+    return;
+  }
+  
     // ล้างค่าเก่าใน input
   document.getElementById('manualCode').value = '';
   currentMode = "manual";
