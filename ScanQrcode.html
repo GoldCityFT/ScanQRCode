@@ -33,18 +33,18 @@
       display:none; /* ซ่อนตอนเริ่ม */
     }
 
-    #message {
-      position: absolute;
-      bottom: 20px;
-      width: 100%;
-      text-align: center;
-      color: white;
-      font-size: 3rem;
-      font-weight: bold;
-      text-shadow: 0 0 5px black;
-      z-index: 2;
-      display:none; /* ซ่อนตอนเริ่ม */
-    }
+   #message {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: clamp(1rem, 4vw, 1.5rem); /* ขนาดเล็ก–ใหญ่ปรับตามหน้าจอ */
+  font-weight: bold;
+  text-shadow: 0 0 5px black;
+  z-index: 2;
+  display:none;
+}
 
     /* popup */
     #popup {
@@ -109,7 +109,7 @@
   <!-- popup เลือก Scan / Manual -->
   <div id="popup">
     <div id="popupMessage">
-      <p>กรุณาเลือกวิธีเข้ารหัส</p>
+      <p>กรุณาเลือกวิธีกรอก QR Code</p>
       <button id="scanBtn">📷 สแกน QR Code</button>
       <button id="manualBtn">✏️ กรอกด้วยตัวเอง</button>
       <div id="manualInput">
