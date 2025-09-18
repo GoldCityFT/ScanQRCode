@@ -269,6 +269,13 @@ async function scanQRCode() {
   currentMode = "scan";
   updateModeSwitch();
   isScanned = false;
+
+    // --- เช็กรหัสที่เคยสแกนก่อนเริ่ม ---
+  const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+  if(scannedCodes.length > 0){
+    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", null);
+  }
+  
   main();
 }
 
@@ -329,10 +336,16 @@ document.getElementById('popupManualBtn').onclick = manualInputMode;
 document.getElementById('cameraBtn').onclick = scanQRCode;
 document.getElementById('manualSwitchBtn').onclick = manualInputMode;
 
-// ปิดกล้องตอนออกจากหน้านี้
-window.addEventListener("beforeunload", async () => {
-  if(html5QrCode) await html5QrCode.stop().catch(()=>{});
+// เมื่อกลับมาหน้า Scan หรือ reload
+window.addEventListener('pageshow', () => {
+  const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+  if(scannedCodes.length > 0 && currentMode !== "manual"){
+    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", () => {
+      scanQRCode(); // เริ่มกล้องทันทีหลัง popup
+    });
+  }
 });
+
 </script>
 </body>
 </html>
