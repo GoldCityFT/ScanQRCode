@@ -39,7 +39,7 @@ html, body {
 
 #message {
   position: fixed; 
-  top: 20px;             /* อยู่ด้านบน */
+  top: 20px;
   left: 0;
   width: 100%;
   text-align: center;
@@ -51,8 +51,8 @@ html, body {
   display:none;
 }
 
-/* popup เลือกวิธี */
-#popup {
+/* popup เลือก Scan / Manual */
+#popupMode {
   display:flex;
   position:fixed;
   top:0; left:0; right:0; bottom:0;
@@ -62,7 +62,7 @@ html, body {
   z-index:9999;
 }
 
-#popupMessage {
+#popupModeContent {
   background:#fff;
   padding:40px;
   border-radius:20px;
@@ -75,7 +75,7 @@ html, body {
   box-shadow:0 8px 25px rgba(0,0,0,0.5);
 }
 
-#popup button {
+#popupModeContent button {
   margin-top: 15px;
   padding: 15px 30px;
   border:none;
@@ -86,9 +86,33 @@ html, body {
   cursor:pointer;
   transition: all 0.2s ease-in-out;
 }
-#popup button:hover { 
+#popupModeContent button:hover { 
   background:#009f2b; 
   transform: scale(1.05);
+}
+
+/* popup แจ้งเตือน / Alert */
+#popupAlert {
+  display:none;
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+#popupAlertContent {
+  background:#fff;
+  padding:40px;
+  border-radius:20px;
+  text-align:center;
+  font-size: clamp(20px, 5vw, 32px);
+  font-weight:bold;
+  color:#333;
+  min-width:300px;
+  max-width:90%;
+  box-shadow:0 8px 25px rgba(0,0,0,0.5);
 }
 
 /* manual input (กลางจอ, ใหญ่ขึ้น) */
@@ -175,15 +199,22 @@ html, body {
 <div id="message">สแกน QR Code ของคุณเป็นแนวตั้ง</div>
 
 <!-- popup เลือก Scan / Manual -->
-<div id="popup">
-  <div id="popupMessage">
+<div id="popupMode">
+  <div id="popupModeContent">
     <p>กรุณาเลือกวิธีกรอก QR Code</p>
     <button id="popupScanBtn">📷 สแกน QR Code</button>
     <button id="popupManualBtn">✏️ กรอกด้วยตัวเอง</button>
   </div>
 </div>
 
-<!-- manual input (อยู่นอก popup) -->
+<!-- popup แจ้งเตือน -->
+<div id="popupAlert">
+  <div id="popupAlertContent">
+    <p id="popupAlertText">ข้อความแจ้งเตือน</p>
+  </div>
+</div>
+
+<!-- manual input -->
 <div id="manualInput">
   <input type="text" id="manualCode" placeholder="กรอกโค้ดด้วยตัวเอง">
   <button id="manualSubmit">ยืนยัน</button>
@@ -206,24 +237,14 @@ function updateModeSwitch(){
   document.getElementById('manualSwitchBtn').classList.toggle('active', currentMode==='manual');
 }
 
-// popup แจ้งผล
-function showPopup(message, callback, hideButtons=false){
-  const popup = document.getElementById("popup");
-  const msgBox = document.getElementById("popupMessage");
-  const pTag = msgBox.querySelector('p');
-  const scanBtn = document.getElementById('popupScanBtn');
-  const manualBtn = document.getElementById('popupManualBtn');
-
-  const oldText = pTag.textContent;
-  pTag.textContent = message;
-
-  scanBtn.style.display = hideButtons ? 'none' : 'inline-block';
-  manualBtn.style.display = hideButtons ? 'none' : 'inline-block';
-
+// ฟังก์ชันแสดง popup แจ้งเตือน
+function showAlertPopup(message, callback){
+  const popup = document.getElementById("popupAlert");
+  const text = document.getElementById("popupAlertText");
+  text.textContent = message;
   popup.style.display = "flex";
   setTimeout(()=>{
     popup.style.display = "none";
-    pTag.textContent = oldText;
     if(callback) callback();
     isScanned = false;
   }, 2000);
@@ -233,13 +254,12 @@ function showPopup(message, callback, hideButtons=false){
 async function processCode(code){
   if(!code) return;
   const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
-    if(scannedCodes.includes(code)) {
+  if(scannedCodes.includes(code)) {
     // เคยสแกนแล้ว
-    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", null, true);
+    showAlertPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว");
     return;
   }
   
-// ยังไม่เคยสแกน
   scannedCodes.push(code);
   sessionStorage.setItem('tracking', code);
   sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
@@ -255,12 +275,18 @@ async function processCode(code){
     console.error('Update backend failed:', err);
   }
 
-  showPopup("✅ บันทึกเรียบร้อย!", ()=> { window.location.href = "Form.html"; }, true);
+  showAlertPopup("✅ บันทึกเรียบร้อย!", ()=> { window.location.href = "Form.html"; });
 }
 
 // Scan mode
 async function scanQRCode() {
-  document.getElementById('popup').style.display = 'none';
+  const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+  if(scannedCodes.length > 0){
+    showAlertPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว");
+    return; // block การ scan
+  }
+
+  document.getElementById('popupMode').style.display = 'none';
   document.getElementById('manualInput').style.display = 'none';
   document.getElementById('reader').style.display = 'block';
   document.getElementById('overlay').style.display = 'block';
@@ -270,40 +296,23 @@ async function scanQRCode() {
   updateModeSwitch();
   isScanned = false;
 
-    // --- เช็กรหัสที่เคยสแกนก่อนเริ่ม ---
-   const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
-  if(scannedCodes.length > 0){
-    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", null, true);
-    document.getElementById('reader').style.display = 'none';
-    document.getElementById('overlay').style.display = 'none';
-    document.getElementById('message').style.display = 'none';
-    currentMode = null;
-    updateModeSwitch();
-    return;
-  }
-  
   main();
 }
 
 // Manual mode
 function manualInputMode() {
-  document.getElementById('popup').style.display = 'none';
+  const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+  if(scannedCodes.length > 0){
+    showAlertPopup("⚠️ คุณเคยกรอกข้อมูลนี้แล้ว");
+    return; // block การกรอก
+  }
+
+  document.getElementById('popupMode').style.display = 'none';
   document.getElementById('reader').style.display = 'none';
   document.getElementById('overlay').style.display = 'none';
   document.getElementById('message').style.display = 'none';
   document.getElementById('manualInput').style.display = 'flex';
 
-  const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
-  if(scannedCodes.length > 0){
-    // เคยสแกน/กรอกแล้ว → แจ้ง popup และ block input
-    showPopup("⚠️ คุณเคยกรอกข้อมูลนี้แล้ว", null, true);
-    document.getElementById('manualInput').style.display = 'none';
-    currentMode = null;
-    updateModeSwitch();
-    return;
-  }
-  
-    // ล้างค่าเก่าใน input
   document.getElementById('manualCode').value = '';
   currentMode = "manual";
   updateModeSwitch();
@@ -314,7 +323,7 @@ document.getElementById('manualSubmit').onclick = async () => {
   const code = document.getElementById('manualCode').value.trim();
   if(!code){ alert("กรุณากรอกโค้ดด้วยครับ"); return; }
   await processCode(code);
-};
+}
 
 // toggle mode
 async function toggleMethod() {
@@ -342,7 +351,7 @@ async function main() {
     errorMessage => { console.log("Scanning...", errorMessage); }
   ).catch(err=>{
     console.error("Camera start error:", err);
-    showPopup("❌ ไม่สามารถเปิดกล้องได้", null, true);
+    showAlertPopup("❌ ไม่สามารถเปิดกล้องได้");
   });
 }
 
@@ -352,16 +361,17 @@ document.getElementById('popupManualBtn').onclick = manualInputMode;
 document.getElementById('cameraBtn').onclick = scanQRCode;
 document.getElementById('manualSwitchBtn').onclick = manualInputMode;
 
-// เมื่อกลับมาหน้า Scan หรือ reload
+// หน้าโหลด / reload
 window.addEventListener('pageshow', () => {
   const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
-  if(scannedCodes.length > 0 && currentMode !== "manual"){
-    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", () => {
-      scanQRCode(); // เริ่มกล้องทันทีหลัง popup
-    });
+  if(scannedCodes.length > 0){
+    // แสดง alert popup แทน popup เลือกโหมด
+    showAlertPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว");
+  } else {
+    // ยังไม่เคยสแกน → popup เลือกโหมด
+    document.getElementById('popupMode').style.display = 'flex';
   }
 });
-
 </script>
 </body>
 </html>
