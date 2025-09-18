@@ -233,8 +233,14 @@ function showPopup(message, callback, hideButtons=false){
 async function processCode(code){
   if(!code) return;
   const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
-  if(!scannedCodes.includes(code)) scannedCodes.push(code);
-
+    if(scannedCodes.includes(code)) {
+    // เคยสแกนแล้ว
+    showPopup("⚠️ คุณเคยสแกน QR Code นี้แล้ว", null, true);
+    return;
+  }
+  
+// ยังไม่เคยสแกน
+  scannedCodes.push(code);
   sessionStorage.setItem('tracking', code);
   sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
 
@@ -274,6 +280,8 @@ function manualInputMode() {
   document.getElementById('message').style.display = 'none';
   document.getElementById('manualInput').style.display = 'flex';
 
+    // ล้างค่าเก่าใน input
+  document.getElementById('manualCode').value = '';
   currentMode = "manual";
   updateModeSwitch();
 }
