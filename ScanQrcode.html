@@ -198,12 +198,13 @@ html, body {
 <div id="overlay"></div>
 <div id="message">สแกน QR Code ของคุณเป็นแนวตั้ง</div>
 
-<!-- popup เลือก Scan / Manual -->
+<!-- popup เลือก Scan / Manual / Lost -->
 <div id="popupMode">
   <div id="popupModeContent">
     <p>กรุณาเลือกวิธีกรอก QR Code</p>
     <button id="popupScanBtn">📷 สแกน QR Code</button>
     <button id="popupManualBtn">✏️ กรอกด้วยตัวเอง</button>
+    <button id="popupLostBtn">❌ ไม่สามารถระบุรหัสพัสดุได้</button>
   </div>
 </div>
 
@@ -227,7 +228,7 @@ html, body {
 <div id="modeSwitch">
   <button id="cameraBtn">📷 Camera</button>
   <button id="manualSwitchBtn">✏️ Manual</button>
-  <button id="popupLostBtn">❌ ไม่สามารถระบุรหัสพัสดุได้</button>
+  
 </div>
 
 <script>
@@ -259,7 +260,8 @@ function showAlertPopup(message, redirect = true){
   }, 2000);
 }
 
-  document.getElementById('popupLostBtn').onclick = () => {
+  // กดปุ่ม Lost → ไปหน้า Losstrackingcode.html
+document.getElementById('popupLostBtn').onclick = () => {
   window.location.href = "Losstrackingcode.html";
 };
   
