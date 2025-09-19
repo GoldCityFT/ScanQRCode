@@ -222,6 +222,7 @@ async function main() {
 
   // --- โหลด UserId ---
   const profile = await liff.getProfile();
+  const userId = profile.userId;
   document.getElementById("UserId").value = profile.userId;
 
   // --- โหลด Tracking ---
@@ -244,13 +245,17 @@ async function main() {
     const GET_URL = `https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec?token=${SECRET_TOKEN}&UserId=${profile.userId}`;
     const res = await fetch(GET_URL);
     const result = await res.json();
+
     if (!result.isFirstTime && result.lastData){
       const data = result.lastData;
+
       if(data.DisplayName) document.querySelector("input[name='DisplayName']").value = data.DisplayName;
       if(data.Location) document.querySelector("input[name='Location']").value = data.Location;
       if(data.PostCode) document.querySelector("input[name='PostCode']").value = data.PostCode;
     }
-  } catch(err){ console.error("Error fetching last data:", err); }
+  } catch(err){
+    console.error("Error fetching last data:", err);
+  }
 }
 
 main();
