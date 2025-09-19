@@ -241,15 +241,18 @@ function updateModeSwitch(){
 }
 
 // ฟังก์ชันแสดง popup แจ้งเตือน และไปหน้า Form
-function showAlertPopup(message){
+function showAlertPopup(message, redirect = true){
   const popup = document.getElementById("popupAlert");
   const text = document.getElementById("popupAlertText");
   text.textContent = message;
   popup.style.display = "flex";
+
   setTimeout(()=>{
     popup.style.display = "none";
-    window.location.href = "Form.html";
-    isScanned = false;
+    isScanned = false; // reset
+    if(redirect){
+      window.location.href = "Form.html";
+    }
   }, 2000);
 }
 
@@ -353,18 +356,18 @@ async function main() {
     }
     };
   html5QrCode.start(
-    { facingMode: "environment" },
-    config,
-    async qrCodeMessage => {
-      if(isScanned) return;
-      isScanned = true;
-      await processCode(qrCodeMessage.trim());
-    },
-    errorMessage => { console.log("Scanning...", errorMessage); }
-  ).catch(err=>{
-    console.error("Camera start error:", err);
-    showAlertPopup("❌ ไม่สามารถเปิดกล้องได้");
-  });
+  { facingMode: "environment" },
+  config,
+  async qrCodeMessage => {
+    if(isScanned) return;
+    isScanned = true;
+    await processCode(qrCodeMessage.trim());
+  },
+  errorMessage => { console.log("Scanning...", errorMessage); }
+).catch(err=>{
+  console.error("Camera start error:", err);
+  showAlertPopup("❌ ไม่สามารถเปิดกล้องได้", false); // ไม่ redirect
+});
 }
 
 // Event ปุ่ม
@@ -387,8 +390,8 @@ async function toggleMethod() {
 window.addEventListener('pageshow', () => {
   const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
   if(scannedCodes.length > 0){
-    // ถ้าเคยสแกนแล้ว → แจ้งเตือน และไป Form
-    showAlertPopup("⚠️ คุณเคยบันทึกข้อมูลนี้แล้ว");
+    // ถ้าเคยสแกนแล้ว → แจ้งเตือน แต่ไม่ redirect
+    showAlertPopup("⚠️ คุณเคยบันทึกข้อมูลนี้แล้ว", false);
   } else {
     // ยังไม่เคยสแกน → แสดง popup เลือกโหมด
     document.getElementById('popupMode').style.display = 'flex';
