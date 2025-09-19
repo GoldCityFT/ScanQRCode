@@ -189,51 +189,7 @@
   </div>
 </div>
 <script>
-  let isSubmitted = false;
-  
-async function main() {
-  await liff.init({ liffId: "2007956346-G5BmkAQl" });
-  if (!liff.isLoggedIn()) liff.login();
-  else {
-      const profile = await liff.getProfile();
-       document.getElementById("UserId").value = profile.userId;
-      // --- Fetch last data from GAS doGet ---
-    const SECRET_TOKEN = "Gl0D$Yt1@";
-    const USER_ID = profile.userId;
-    const GET_URL = `https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec?token=${SECRET_TOKEN}&UserId=${USER_ID}`;
-    
-    try {
-      const res = await fetch(GET_URL);
-      const result = await res.json();
-      if (!result.isFirstTime && result.lastData) {
-        const data = result.lastData;
-        if (data.DisplayName) document.querySelector("input[name='DisplayName']").value = "";
-        if (data.Location) document.querySelector("input[name='Location']").value = "";
-        if (data.PostCode) document.querySelector("input[name='PostCode']").value = "";
-      }
-    } catch(err) {
-      console.error("Error fetching last data:", err);
-    }
-    
-  }
- 
-
-  const trackingCode = sessionStorage.getItem('tracking') || '';
-  document.getElementById('Tracking').value = trackingCode;
-
-if(!trackingCode){
-  modal.querySelector("p").textContent = '❌ ไม่พบ QR Code ที่สแกน กรุณาสแกนก่อน';
-  modal.style.display = "flex";
-  okBtn.onclick = () => {
-    modal.style.display = "none";
-    window.location.href = "ScanQrcode.html";
-  };
-  return; // หยุดไม่ให้โหลดต่อ
-}
-
-}
-
-main();
+let isSubmitted = false;
 
 const itemSelect = document.getElementById("itemSelect");
 const colorSelect = document.getElementById("colorSelect");
@@ -260,50 +216,91 @@ function updateColors() {
 }
 itemSelect.addEventListener("change", updateColors);
 
-form.addEventListener("submit", function(event) {
-  const selectedItem = itemSelect.value;
-  const selectedColor = colorSelect.value;
+async function main() {
+  await liff.init({ liffId: "2007956346-G5BmkAQl" });
+  if (!liff.isLoggedIn()) return liff.login();
 
-  if (selectedItem && !selectedColor) {
-    event.preventDefault(); // หยุด submit
-    modal.querySelector("p").textContent = "กรุณาเลือกสีด้วยครับ";
+  // --- โหลด UserId ---
+  const profile = await liff.getProfile();
+  document.getElementById("UserId").value = profile.userId;
+
+  // --- โหลด Tracking ---
+  const trackingCode = sessionStorage.getItem('tracking') || '';
+  document.getElementById('Tracking').value = trackingCode;
+
+  if(!trackingCode){
+    modal.querySelector("p").textContent = '❌ ไม่พบ QR Code ที่สแกน กรุณาสแกนก่อน';
     modal.style.display = "flex";
     okBtn.onclick = () => {
       modal.style.display = "none";
+      window.location.href = "ScanQrcode.html";
     };
     return;
   }
 
+  // --- Prefill ข้อมูลจาก GAS ---
+  try {
+    const SECRET_TOKEN = "Gl0D$Yt1@";
+    const GET_URL = `https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec?token=${SECRET_TOKEN}&UserId=${profile.userId}`;
+    const res = await fetch(GET_URL);
+    const result = await res.json();
+    if (!result.isFirstTime && result.lastData){
+      const data = result.lastData;
+      if(data.DisplayName) document.querySelector("input[name='DisplayName']").value = data.DisplayName;
+      if(data.Location) document.querySelector("input[name='Location']").value = data.Location;
+      if(data.PostCode) document.querySelector("input[name='PostCode']").value = data.PostCode;
+      if(data.ItemName) itemSelect.value = data.ItemName;
+      updateColors();
+      if(data.Color) colorSelect.value = data.Color;
+      if(data.Size) document.querySelector("select[name='Size']").value = data.Size;
+    }
+  } catch(err){ console.error("Error fetching last data:", err); }
+}
+
+main();
+
+form.addEventListener("submit", function(event) {
+  const selectedItem = itemSelect.value;
+  const selectedColor = colorSelect.value;
+  if(selectedItem && !selectedColor){
+    event.preventDefault();
+    modal.querySelector("p").textContent = "กรุณาเลือกสีด้วยครับ";
+    modal.style.display = "flex";
+    okBtn.onclick = () => { modal.style.display = "none"; };
+    return;
+  }
+
   event.preventDefault();
-  isSubmitted = true; // กำหนดว่ากด submit
-  form.submit(); // ส่งไป iframe
+  isSubmitted = true;
+  form.submit();
   modal.querySelector("p").textContent = "กรอกข้อมูลสำเร็จ!";
   modal.style.display = "flex";
 
-    // ล้างค่า input เพื่อไม่ให้ prefill เก่าติด
-if (data.DisplayName) document.querySelector("input[name='DisplayName']").value = data.DisplayName;
-if (data.Location) document.querySelector("input[name='Location']").value = data.Location;
-if (data.PostCode) document.querySelector("input[name='PostCode']").value = data.PostCode;
+  // ล้างเฉพาะ input
+  document.querySelector("input[name='DisplayName']").value = "";
+  document.querySelector("input[name='Location']").value = "";
+  document.querySelector("input[name='PostCode']").value = "";
+  itemSelect.value = "";
+  colorSelect.innerHTML = '<option value="">-- เลือกสี --</option>';
 
-  
+  // ล้าง tracking เฉพาะหลัง submit
   sessionStorage.removeItem('tracking');
 });
 
-  // ส่ง UserId + Tracking ถ้า user ปิด/ย้อนกลับโดยไม่ submit
+// --- ส่ง UserId+Tracking ถ้า user ปิด/ย้อนกลับ ---
 document.addEventListener("visibilitychange", function() {
-  if (!isSubmitted && document.visibilityState === "hidden") {
+  if(!isSubmitted && document.visibilityState==="hidden"){
     const data = new FormData();
-    data.append('token', 'Gl0D$Yt1@');
+    data.append('token','Gl0D$Yt1@');
     data.append('UserId', document.getElementById('UserId').value);
     data.append('Tracking', document.getElementById('Tracking').value);
     navigator.sendBeacon("https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec", data);
   }
 });
-  
 
 okBtn.addEventListener("click", () => {
   modal.style.display = "none";
-  liff.closeWindow(); // ปิด LIFF app / webview
+  liff.closeWindow();
 });
 </script>
 </body>
