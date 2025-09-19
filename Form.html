@@ -249,10 +249,6 @@ async function main() {
       if(data.DisplayName) document.querySelector("input[name='DisplayName']").value = data.DisplayName;
       if(data.Location) document.querySelector("input[name='Location']").value = data.Location;
       if(data.PostCode) document.querySelector("input[name='PostCode']").value = data.PostCode;
-      if(data.ItemName) itemSelect.value = data.ItemName;
-      updateColors();
-      if(data.Color) colorSelect.value = data.Color;
-      if(data.Size) document.querySelector("select[name='Size']").value = data.Size;
     }
   } catch(err){ console.error("Error fetching last data:", err); }
 }
