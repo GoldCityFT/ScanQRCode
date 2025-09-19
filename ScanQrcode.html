@@ -227,6 +227,7 @@ html, body {
 <div id="modeSwitch">
   <button id="cameraBtn">📷 Camera</button>
   <button id="manualSwitchBtn">✏️ Manual</button>
+  <button id="popupLostBtn">❌ ไม่สามารถระบุรหัสพัสดุได้</button>
 </div>
 
 <script>
@@ -258,6 +259,10 @@ function showAlertPopup(message, redirect = true){
   }, 2000);
 }
 
+  document.getElementById('popupLostBtn').onclick = () => {
+  window.location.href = "Losstrackingcode.html";
+};
+  
 // ใช้กับทั้ง QR และ Manual
 async function processCode(code){
   if(!code) return;
