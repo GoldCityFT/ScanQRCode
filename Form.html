@@ -281,9 +281,10 @@ form.addEventListener("submit", function(event) {
   modal.style.display = "flex";
 
     // ล้างค่า input เพื่อไม่ให้ prefill เก่าติด
-  document.querySelector("input[name='DisplayName']").value = "";
-  document.querySelector("input[name='Location']").value = "";
-  document.querySelector("input[name='PostCode']").value = "";
+if (data.DisplayName) document.querySelector("input[name='DisplayName']").value = data.DisplayName;
+if (data.Location) document.querySelector("input[name='Location']").value = data.Location;
+if (data.PostCode) document.querySelector("input[name='PostCode']").value = data.PostCode;
+
   
   sessionStorage.removeItem('tracking');
 });
