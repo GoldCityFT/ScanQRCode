@@ -207,9 +207,9 @@ async function main() {
       const result = await res.json();
       if (!result.isFirstTime && result.lastData) {
         const data = result.lastData;
-        if (data.DisplayName) document.querySelector("input[name='DisplayName']").value = data.DisplayName;
-        if (data.Location) document.querySelector("input[name='Location']").value = data.Location;
-        if (data.PostCode) document.querySelector("input[name='PostCode']").value = data.PostCode;
+        if (data.DisplayName) document.querySelector("input[name='DisplayName']").value = "";
+        if (data.Location) document.querySelector("input[name='Location']").value = "";
+        if (data.PostCode) document.querySelector("input[name='PostCode']").value = "";
       }
     } catch(err) {
       console.error("Error fetching last data:", err);
@@ -279,6 +279,12 @@ form.addEventListener("submit", function(event) {
   form.submit(); // ส่งไป iframe
   modal.querySelector("p").textContent = "กรอกข้อมูลสำเร็จ!";
   modal.style.display = "flex";
+
+    // ล้างค่า input เพื่อไม่ให้ prefill เก่าติด
+  document.querySelector("input[name='DisplayName']").value = "";
+  document.querySelector("input[name='Location']").value = "";
+  document.querySelector("input[name='PostCode']").value = "";
+  
   sessionStorage.removeItem('tracking');
 });
 
