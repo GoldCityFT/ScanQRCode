@@ -1,3 +1,4 @@
+แบบนี้นะ 
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -257,43 +258,33 @@ function showAlertPopup(message){
 async function processCode(code){
   if(!code) return;
 
+  // ดึงรายการที่เคยสแกนมา
+  const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
+
+  // ✅ เคยสแกนแล้ว
+  if(scannedCodes.includes(code)) {
+    showAlertPopup("⚠️ คุณเคยบันทึกข้อมูลนี้แล้ว");
+    return;
+  }
+
+  // ยังไม่เคย → บันทึกใหม่
+  scannedCodes.push(code);
+  sessionStorage.setItem('tracking', code);
+  sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
+
+  // ส่งไป backend
   try {
-    // เรียก backend ก่อนว่ามีอยู่มั้ย
-    const res = await fetch('/api/checkTracking', {
+    await fetch('/api/updateTracking', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tracking: code })
     });
-    const { exists } = await res.json();
 
-    // ถ้าเคยมีแล้ว → update
-    if(exists){
-      await fetch('/api/updateTracking', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tracking: code })
-      });
-      showAlertPopup("⚠️ คุณเคยบันทึกข้อมูลนี้แล้ว");
-    } 
-    // ถ้ายังไม่มี → insert
-    else {
-      await fetch('/api/insertTracking', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tracking: code })
-      });
-
-      // เก็บใน sessionStorage
-      const scannedCodes = JSON.parse(sessionStorage.getItem('scannedCodes') || '[]');
-      scannedCodes.push(code);
-      sessionStorage.setItem('tracking', code);
-      sessionStorage.setItem('scannedCodes', JSON.stringify(scannedCodes));
-
-      showAlertPopup("✅ บันทึกเรียบร้อย!");
-    }
+    // แจ้งเตือนครั้งเดียวหลัง update สำเร็จ
+    showAlertPopup("✅ บันทึกเรียบร้อย!");
 
   } catch(err){
-    console.error('Process code failed:', err);
+    console.error('Update backend failed:', err);
     showAlertPopup("❌ เกิดข้อผิดพลาดในการบันทึก");
   }
 }
@@ -407,4 +398,3 @@ window.addEventListener('pageshow', () => {
 </script>
 </body>
 </html>
-
