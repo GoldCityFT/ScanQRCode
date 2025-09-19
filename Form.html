@@ -194,7 +194,29 @@
 async function main() {
   await liff.init({ liffId: "2007956346-G5BmkAQl" });
   if (!liff.isLoggedIn()) liff.login();
-  else document.getElementById("UserId").value = (await liff.getProfile()).userId;
+  else {
+      const profile = await liff.getProfile();
+       document.getElementById("UserId").value = profile.userId;
+      // --- Fetch last data from GAS doGet ---
+    const SECRET_TOKEN = "Gl0D$Yt1@";
+    const USER_ID = profile.userId;
+    const GET_URL = `https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec?token=${SECRET_TOKEN}&UserId=${USER_ID}`;
+    
+    try {
+      const res = await fetch(GET_URL);
+      const result = await res.json();
+      if (!result.isFirstTime && result.lastData) {
+        const data = result.lastData;
+        if (data.DisplayName) document.querySelector("input[name='DisplayName']").value = data.DisplayName;
+        if (data.Location) document.querySelector("input[name='Location']").value = data.Location;
+        if (data.PostCode) document.querySelector("input[name='PostCode']").value = data.PostCode;
+      }
+    } catch(err) {
+      console.error("Error fetching last data:", err);
+    }
+    
+  }
+ 
 
   const trackingCode = sessionStorage.getItem('tracking') || '';
   document.getElementById('Tracking').value = trackingCode;
