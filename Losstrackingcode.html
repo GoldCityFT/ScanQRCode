@@ -2,163 +2,254 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>My LIFF Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แบบสอบถามลูกค้า</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    body 
-    {
-        margin: 0;
-        padding: 0;
-        font-family: 'Prompt', sans-serif;
-        background: linear-gradient(135deg, #00C300, #00A86B);
-        color: white;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        text-align: center;
-    }
-    h1 
-    {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-    }
-    button 
-    {
-     background: #ffffff;
-     color: #00A86B;
-     border: none;
-     padding: 15px 30px;
-     border-radius: 50px;
-     font-size: 1.2rem;
-     font-weight: bold;
-     cursor: pointer;
-     transition: all 0.3s ease;
-     margin: 10px;
-     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-    button:hover 
-    {
-      background: #00A86B;
-      color: white;
-      transform: scale(1.05);
-    }
-    a.back-link 
-    {
-      color: white;
-      font-weight: bold;
-      text-decoration: none;
-      margin-top: 20px;
-      display: inline-block;
-      padding: 10px 20px;
-      border: 2px solid white;
-      border-radius: 30px;
-      transition: all 0.3s ease;
-    }
-    a.back-link:hover 
-    {
-      background: white;
-      color: #00A86B;
+ <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    
-    /* Popup Consent */
-#consentModal {
-  display: none;
-  position: fixed;
+    h2 {
+      margin-bottom: 20px;
+      font-size: 2rem;
+      text-align: center;
+    }
+
+    form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #00C300;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #009f2b;
+    }
+
+    /* Modal popup */
+    #modal {
+      display: none;
+      position: fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #modal div {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      max-width: 300px;
+      width: 90%;
+      box-sizing: border-box;
+    }
+
+    /* Responsive สำหรับมือถือ */
+    @media (max-width: 768px) {
+      h2 {
+        font-size: 1.8rem;
+      }
+      form {
+        padding: 15px;
+        max-width: 90%;
+      }
+      input, select, button {
+        font-size: 1rem;
+        padding: 10px;
+      }
+      #modal div {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+<h2>แบบสอบถาม</h2>
+
+<form id="surveyForm" action="https://script.google.com/macros/s/AKfycbyklv9SQB7L2WdrTjHRuwZkm9UB0zime9s8v8gutC2p3VcVPQB1Pd3I8rZoQA_v63zx/exec" method="POST" target="hidden_iframe">
+  <input type="hidden" name="token" value="Gl0D$Yt1@">
+  <input type="hidden" id="UserId" name="UserId">
+  <input type="hidden" id="Tracking" name="Tracking" value="">
+
+  <label>ชื่อ - นามสกุล </label>
+  <input type="text" name="DisplayName" required placeholder="ต้องระบุ">
+
+  <label>ที่อยู่ (ถ้ามี)</label>
+  <input type="text" name="Location" >
+
+  
+ <!-- 
+  <label>เบอร์โทร</label>
+  <input type="number" name="Phone" required placeholder="ต้องระบุ">  
+ -->
+
+  <label>รหัสไปรษณีย์</label>
+  <input type="text" name="PostCode" required placeholder="ต้องระบุ">
+
+  <label>สินค้าที่ซื้อล่าสุด</label>
+  <select id="itemSelect" name="ItemName" required>
+    <option value="">-- เลือกสินค้า --</option>
+    <option value="รองเท้าแตะ">รองเท้าแตะ</option>
+    <option value="รองเท้าผ้าใบ">รองเท้าผ้าใบ</option>
+  </select>
+
+  <label>สี</label>
+  <select id="colorSelect" name="Color" required>
+    <option value="">-- เลือกสี --</option>
+  </select>
+
+  <label>ขนาด (ถ้ามี)</label>
+  <select name="Size">
+    <option value="">-- เลือกขนาด --</option>
+    <option value="39">39</option>
+    <option value="40">40</option>
+    <option value="41">41</option>
+    <option value="42">42</option>
+    <option value="43">43</option>
+    <option value="44">44</option>
+    <option value="45">45</option>
+  </select>
+  
+ <!-- 
+  <label>Invoice (ถ้ามี)</label>
+  <input type="text" name="Invoice" placeholder="เช่น INV1234">
+-->
+  
+  <button type="submit">Submit</button>
+</form>
+
+<!-- ใช้ iframe ซ่อนการโหลดหน้าใหม่ -->
+<iframe name="hidden_iframe" style="display:none;"></iframe>
+
+<!-- popup modal -->
+<div id="modal" style="
+  display:none;
+  position:fixed;
   top:0; left:0;
   width:100%; height:100%;
   background: rgba(0,0,0,0.7);
   justify-content:center;
   align-items:center;
   z-index:1000;
-}
-#consentModalContent {
-  background:white;
-  color:black;
-  padding:30px;
-  border-radius:10px;
-  max-width:400px;
-  text-align:center;
-}
-#consentModalContent button {
-  margin: 10px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  border-radius: 30px;
-  border:none;
-  cursor:pointer;
-}
-#agreeBtn { background:#00A86B; color:white; }
-#declineBtn { background:#ccc; color:black; }
-#agreeBtn:hover { background:#007a4d; }
-#declineBtn:hover { background:#999; }  
-  </style>
-  
-</head>
-<body>
-  
-  <h2 id="welcome"></h2>
-  <button id="gotoForm">ไปกรอกแบบสอบถาม</button>
-  <button id="gotoScan">Scan QRCODE</button>
-  
-<!-- Popup Consent -->
-<div id="consentModal">
-  <div id="consentModalContent">
-    <p>ทางราจะเก็บข้อมูล LINE user ID ของคุณเพื่อเชื่อมกับ QR Code <br>คุณยินยอมหรือไม่?</p>
-    <button id="agreeBtn">ยินยอม</button>
-    <button id="declineBtn">ไม่ยินยอม</button>
+">
+  <div style="
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+    max-width:300px;
+  ">
+    <p>กรอกข้อมูลสำเร็จ!</p>
+    <button id="okBtn">OK</button>
   </div>
 </div>
-
-
 <script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    try {
-      await liff.init({ liffId: "2007956346-G5BmkAQl" });
+let isSubmitted = false;
 
-      if (!liff.isLoggedIn()) {
-        liff.login();
-        return;
-      }
+async function main() {
+  await liff.init({ liffId: "2007956346-G5BmkAQl" });
+  if (!liff.isLoggedIn()) liff.login();
+  else document.getElementById("UserId").value = (await liff.getProfile()).userId;
+}
 
-      const profile = await liff.getProfile();
-      const displayName = profile.displayName;
+main();
 
-      // แสดงชื่อผู้ใช้
-      document.getElementById("welcome").innerText = "Hello, " + displayName;
+const itemSelect = document.getElementById("itemSelect");
+const colorSelect = document.getElementById("colorSelect");
+const form = document.getElementById("surveyForm");
+const modal = document.getElementById("modal");
+const okBtn = document.getElementById("okBtn");
 
-      // ปุ่มไปหน้า form.html
-      document.getElementById("gotoForm").addEventListener("click", () => {
-        window.location.href = "Form.html";
-      });
-     // ปุ่ม Scan QRCODE → แสดง popup ยินยอม
-    const gotoScanBtn = document.getElementById("gotoScan");
-    const consentModal = document.getElementById("consentModal");
-    const agreeBtn = document.getElementById("agreeBtn");
-    const declineBtn = document.getElementById("declineBtn");
+const colorOptions = {
+  "รองเท้าแตะ": ["ดำ", "ขาว"],
+  "รองเท้าผ้าใบ": ["แดง", "ดำ", "ขาว", "ครีม", "เขียว", "น้ำเงิน"]
+};
 
-    gotoScanBtn.addEventListener("click", () => {
-      consentModal.style.display = "flex";
+function updateColors() {
+  const selectedItem = itemSelect.value;
+  colorSelect.innerHTML = '<option value="">-- เลือกสี --</option>';
+  if(selectedItem && colorOptions[selectedItem]){
+    colorOptions[selectedItem].forEach(color => {
+      const option = document.createElement("option");
+      option.value = color;
+      option.textContent = color;
+      colorSelect.appendChild(option);
     });
+  }
+}
+itemSelect.addEventListener("change", updateColors);
 
-    agreeBtn.addEventListener("click", () => {
-      // ยินยอม → ไป ScanQrcode.html
-      window.location.href = "ScanQrcode.html";
-    });
+form.addEventListener("submit", function(event) {
+  const selectedItem = itemSelect.value;
+  const selectedColor = colorSelect.value;
 
-    declineBtn.addEventListener("click", () => {
-      // ไม่ยินยอม → กลับหน้า login (reload หน้าเดิม)
-      window.location.href = "Login.html";
-    });
+  if (selectedItem && !selectedColor) {
+    event.preventDefault();
+    modal.querySelector("p").textContent = "กรุณาเลือกสีด้วยครับ";
+    modal.style.display = "flex";
+    okBtn.onclick = () => { modal.style.display = "none"; };
+    return;
+  }
 
-    } catch (err) {
-      console.error("LIFF error:", err);
-      alert("เกิดข้อผิดพลาด กรุณาลองใหม่");
-    }
-  });
+  event.preventDefault();
+  isSubmitted = true;
+  form.submit(); // ส่งไป iframe
+  modal.querySelector("p").textContent = "กรอกข้อมูลสำเร็จ!";
+  modal.style.display = "flex";
+});
+
+okBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+  window.location.href = "ScanQrcode.html"; // กลับไปหน้า Scan
+});
+
+// ไม่ต้องส่ง Tracking ด้วย Beacon
 </script>
+
 </body>
 </html>
