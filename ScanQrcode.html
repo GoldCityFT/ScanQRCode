@@ -64,31 +64,48 @@ html, body {
 
 #popupModeContent {
   background:#fff;
-  padding:40px;
+  padding:30px 20px;
   border-radius:20px;
   text-align:center;
-  font-size: clamp(20px, 5vw, 32px);
+  font-size: clamp(18px, 4vw, 28px);
   font-weight:bold;
   color:#333;
-  min-width:300px;
-  max-width:90%;
+  min-width:280px;
+  max-width:400px;
+  width:90%;
   box-shadow:0 8px 25px rgba(0,0,0,0.5);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:15px; /* ระยะห่างระหว่าง element */
 }
 
+  #popupModeContent p {
+  margin-bottom: 10px;
+  font-size: clamp(16px, 4vw, 22px);
+  color: #444;
+}
+
+  
 #popupModeContent button {
-  margin-top: 15px;
-  padding: 15px 30px;
+  width:100%;
+  padding:15px 20px;
   border:none;
   border-radius:12px;
   background:#00C300;
   color:white;
-  font-size:1.2rem;
+  font-size:1.1rem;
   cursor:pointer;
   transition: all 0.2s ease-in-out;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:8px;
 }
+
 #popupModeContent button:hover { 
   background:#009f2b; 
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 /* popup แจ้งเตือน / Alert */
@@ -202,9 +219,9 @@ html, body {
 <div id="popupMode">
   <div id="popupModeContent">
     <p>กรุณาเลือกวิธีกรอก QR Code</p>
-    <button id="popupScanBtn">📷 สแกน QR Code</button>
-    <button id="popupManualBtn">✏️ กรอกรหัสพัสดุด้วยตัวเอง</button>
-    <button id="popupLostBtn">❌ ไม่สามารถระบุรหัสพัสดุได้</button>
+<button id="popupScanBtn">📷 <span>สแกน QR Code</span></button>
+<button id="popupManualBtn">✏️ <span>กรอกรหัสพัสดุด้วยตัวเอง</span></button>
+<button id="popupLostBtn">❌ <span>ไม่สามารถระบุรหัสพัสดุได้</span></button>
   </div>
 </div>
 
