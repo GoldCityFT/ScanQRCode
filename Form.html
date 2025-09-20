@@ -303,6 +303,17 @@ okBtn.addEventListener("click", () => {
   modal.style.display = "none";
   liff.closeWindow();
 });
+  
+ window.addEventListener("DOMContentLoaded", () => {
+  const tracking = sessionStorage.getItem("tracking");
+  const trackingInput = document.getElementById("Tracking");
+  if (tracking && trackingInput) {
+    trackingInput.value = tracking;
+    console.log("Tracking loaded from sessionStorage:", tracking);
+  }
+});
+
+
 </script>
 </body>
 </html>
