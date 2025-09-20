@@ -106,6 +106,20 @@
         padding: 15px;
       }
     }
+
+
+   form {
+  display: none; /* ซ่อนก่อน */
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+
+   
   </style>
 </head>
 <body>
@@ -256,6 +270,9 @@ async function main() {
   } catch(err){
     console.error("Error fetching last data:", err);
   }
+  
+  // --- ทุกอย่างพร้อมแล้ว ค่อยโชว์ form ---
+  form.style.display = "block";
 }
 
 main();
