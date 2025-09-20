@@ -52,12 +52,25 @@ p
       try {
         await liff.init({ liffId: "2007956346-G5BmkAQl" });
 
-        if (!liff.isLoggedIn()) {
-          liff.login(); // login ก่อน
+        // เช็คว่าเคยถูก reload แล้วหรือยัง (ป้องกัน loop)
+        const alreadyReset = sessionStorage.getItem("alreadyReset");
+
+        if (liff.isLoggedIn() && !alreadyReset) {
+          // ล้างค่า session/localStorage และ reload 1 ครั้ง
+          liff.logout();
+          localStorage.clear();
+          sessionStorage.clear();
+          sessionStorage.setItem("alreadyReset", "true");
+          window.location.reload();
           return;
         }
 
-      // login แล้ว → ไปหน้า ScanQrcode.html ทันที
+        if (!liff.isLoggedIn()) {
+          liff.login();
+          return;
+        }
+
+        // login แล้ว → ไปหน้า ScanQrcode.html
         window.location.href = "ScanQrcode.html";
 
       } catch (err) {
@@ -66,7 +79,7 @@ p
       }
     }
 
-  main();
+    window.onload = main;
   </script>
 </body>
 </html>
