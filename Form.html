@@ -304,16 +304,28 @@ okBtn.addEventListener("click", () => {
   liff.closeWindow();
 });
   
- window.addEventListener("DOMContentLoaded", () => {
-  const tracking = sessionStorage.getItem("tracking");
-  const trackingInput = document.getElementById("Tracking");
-  if (tracking && trackingInput) {
-    trackingInput.value = tracking;
-    console.log("Tracking loaded from sessionStorage:", tracking);
+// --- แจ้งเตือนก่อน refresh / close
+window.addEventListener('beforeunload', function (e) {
+  if(!isSubmitted){
+    const message = "⚠️ ท่านยังไม่ได้ส่งข้อมูล หากย้อนกลับหรือ refresh ข้อมูลจะสูญหาย! หากต้องการแก้ไขขั้นตอนการกรอกรหัสพัสดุกรุณายกเลิกกระบวนการก่อน ท่านจะยกเลิกหรือไม่?";
+    e.preventDefault();
+    e.returnValue = message;
+    return message;
   }
 });
 
+// --- แจ้งเตือนก่อน back/forward
+window.addEventListener('popstate', function (e) {
+  if(!isSubmitted){
+    const confirmLeave = confirm("⚠️ ท่านยังไม่ได้ส่งข้อมูล หากย้อนกลับหรือ refresh ข้อมูลจะสูญหาย! หากต้องการแก้ไขขั้นตอนการกรอกรหัสพัสดุกรุณายกเลิกกระบวนการก่อน ท่านจะยกเลิกหรือไม่?");
+    if(!confirmLeave){
+      history.pushState(null, null, location.href); // ยกเลิก → อยู่หน้าเดิม
+    }
+  }
+});
 
+// --- สร้าง state เริ่มต้น เพื่อป้องกัน back ครั้งแรก
+history.pushState(null, null, location.href);
 </script>
 </body>
 </html>
