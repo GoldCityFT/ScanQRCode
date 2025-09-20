@@ -48,38 +48,40 @@ p
   <p>กำลังตรวจสอบ LINE login …</p>
   
   <script>
-    async function main() {
-      try {
-        await liff.init({ liffId: "2007956346-G5BmkAQl" });
+  async function main() {
+    try {
+      await liff.init({ liffId: "2007956346-G5BmkAQl" });
 
-        // เช็คว่าเคยถูก reload แล้วหรือยัง (ป้องกัน loop)
-        const alreadyReset = sessionStorage.getItem("alreadyReset");
+      const alreadyReset = sessionStorage.getItem("alreadyReset");
 
-        if (liff.isLoggedIn() && !alreadyReset) {
-          // ล้างค่า session/localStorage และ reload 1 ครั้ง
-          liff.logout();
-          localStorage.clear();
-          sessionStorage.clear();
-          sessionStorage.setItem("alreadyReset", "true");
-          window.location.reload();
-          return;
-        }
+      if (liff.isLoggedIn() && !alreadyReset) {
+        // บันทึก flag ก่อน
+        sessionStorage.setItem("alreadyReset", "true");
 
-        if (!liff.isLoggedIn()) {
-          liff.login();
-          return;
-        }
+        // ล้างค่าอื่น (ไม่แตะ sessionStorage)
+        liff.logout();
+        localStorage.clear();
 
-        // login แล้ว → ไปหน้า ScanQrcode.html
-        window.location.href = "ScanQrcode.html";
-
-      } catch (err) {
-        console.error("LIFF init error:", err);
-        alert("เกิดข้อผิดพลาด LIFF init");
+        window.location.reload();
+        return;
       }
-    }
 
-    window.onload = main;
-  </script>
+      if (!liff.isLoggedIn()) {
+        liff.login();
+        return;
+      }
+
+      // login แล้ว → ไปหน้า ScanQrcode.html
+      window.location.href = "ScanQrcode.html";
+
+    } catch (err) {
+      console.error("LIFF init error:", err);
+      alert("เกิดข้อผิดพลาด LIFF init");
+    }
+  }
+
+  window.onload = main;
+</script>
+
 </body>
 </html>
