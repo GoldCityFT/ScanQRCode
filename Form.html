@@ -203,7 +203,7 @@
     <button id="okBtn">OK</button>
   </div>
 </div>
-  <!-- popup รอสักครู่ -->
+ <!-- popup รอสักครู่ -->
 <div id="loadingModal" style="
   display:flex;
   position:fixed;
@@ -216,10 +216,13 @@
 ">
   <div style="
     background:white;
-    padding:20px;
-    border-radius:10px;
+    padding:4vw;            /* ใช้ vw ให้ปรับตามหน้าจอ */
+    border-radius:2vw;
     text-align:center;
-    max-width:250px;
+    max-width:90%;          /* ไม่เกิน 90% ของจอ */
+    width:90%;
+    font-size:4vw;          /* ขนาดตัวอักษรปรับตามจอ */
+    box-sizing:border-box;
   ">
     <p>กรุณารอสักครู่...</p>
   </div>
