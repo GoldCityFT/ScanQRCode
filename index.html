@@ -47,7 +47,7 @@ p
   <h1>ยินดีต้อนรับ! คุณลูกค้า</h1>
   <p>กำลังตรวจสอบ LINE login …</p>
   
-  <script>
+ <script>
   async function main() {
     try {
       await liff.init({ liffId: "2007956346-G5BmkAQl" });
@@ -55,13 +55,12 @@ p
       const alreadyReset = sessionStorage.getItem("alreadyReset");
 
       if (liff.isLoggedIn() && !alreadyReset) {
-        // บันทึก flag ก่อน
+        // กัน reload loop
+        localStorage.clear();
+        sessionStorage.clear();
         sessionStorage.setItem("alreadyReset", "true");
 
-        // ล้างค่าอื่น (ไม่แตะ sessionStorage)
-        liff.logout();
-        localStorage.clear();
-
+        // reload ใหม่แบบ clean
         window.location.reload();
         return;
       }
