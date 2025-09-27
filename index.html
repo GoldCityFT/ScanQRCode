@@ -50,13 +50,13 @@ p
  <script>
   async function main() {
     try {
-      await liff.init({ liffId: "2007956346-G5BmkAQl" });
+      await liff.init({ liffId: "2008187346-LZW3ndvO" }); // 2007956346-G5BmkAQl
 
       const alreadyReset = sessionStorage.getItem("alreadyReset");
 
       if (liff.isLoggedIn() && !alreadyReset) {
         // กัน reload loop
-        localStorage.clear();
+       // localStorage.clear();
         sessionStorage.clear();
         sessionStorage.setItem("alreadyReset", "true");
 
